@@ -11,36 +11,36 @@ import business.externalinterfaces.RulesConfigKey;
 import business.externalinterfaces.RulesConfigProperties;
 import business.externalinterfaces.RulesSubsystem;
 import business.externalinterfaces.ShoppingCart;
-import business.rulesbeans.ShopCartBean;
+import business.rulesbeans.FinalOrderBean;
 import business.rulesubsystem.RulesSubsystemFacade;
 
-public class RulesShoppingCart implements Rules{
+public class RulesFinalOrder implements Rules {
 	
 	private HashMap<String,DynamicBean> table;
 	private DynamicBean bean;	
 	private RulesConfigProperties config = new RulesConfigProperties();
-
-	public RulesShoppingCart(ShoppingCart sc) {
+	
+	public RulesFinalOrder(ShoppingCart sc) {
 		// TODO Auto-generated constructor stub
-		bean = new ShopCartBean(sc);
+		bean = new FinalOrderBean(sc);
 	}
 	@Override
 	public String getModuleName() {
 		// TODO Auto-generated method stub
-		return config.getProperty(RulesConfigKey.SHOPCART_MODULE.getVal());
+		return config.getProperty(RulesConfigKey.FINAL_ORDER_MODULE.getVal());
 	}
 
 	@Override
 	public String getRulesFile() {
 		// TODO Auto-generated method stub
-		return config.getProperty(RulesConfigKey.SHOPCART_RULES_FILE.getVal());
+		return config.getProperty(RulesConfigKey.FINAL_ORDER_RULES_FILE.getVal());
 	}
 
 	@Override
 	public void prepareData() {
 		// TODO Auto-generated method stub
 		table = new HashMap<String,DynamicBean>();		
-		String deftemplate = config.getProperty(RulesConfigKey.SHOPCART_DEFTEMPLATE.getVal());
+		String deftemplate = config.getProperty(RulesConfigKey.FINAL_ORDER_DEFTEMPLATE.getVal());
 		table.put(deftemplate, bean);	
 	}
 
@@ -55,6 +55,7 @@ public class RulesShoppingCart implements Rules{
 		// TODO Auto-generated method stub
 		RulesSubsystem rules = new RulesSubsystemFacade();
     	rules.runRules(this);
+		
 	}
 
 	@Override
