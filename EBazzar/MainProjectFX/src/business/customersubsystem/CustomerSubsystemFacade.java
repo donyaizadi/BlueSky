@@ -1,13 +1,20 @@
 package business.customersubsystem;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import com.sun.org.apache.regexp.internal.recompile;
+
+import middleware.creditverifcation.CreditVerificationFacade;
 import middleware.exceptions.DatabaseException;
+import middleware.exceptions.MiddlewareException;
+import middleware.externalinterfaces.CreditVerification;
 import business.exceptions.BackendException;
 import business.exceptions.BusinessException;
 import business.exceptions.RuleException;
 import business.externalinterfaces.Address;
+import business.externalinterfaces.CartItem;
 import business.externalinterfaces.CreditCard;
 import business.externalinterfaces.CustomerProfile;
 import business.externalinterfaces.CustomerSubsystem;
@@ -16,6 +23,7 @@ import business.externalinterfaces.OrderSubsystem;
 import business.externalinterfaces.Rules;
 import business.externalinterfaces.ShoppingCartSubsystem;
 import business.ordersubsystem.OrderSubsystemFacade;
+import business.shoppingcartsubsystem.DbClassShoppingCart;
 import business.shoppingcartsubsystem.ShoppingCartSubsystemFacade;
 
 public class CustomerSubsystemFacade implements CustomerSubsystem {
@@ -26,7 +34,9 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	AddressImpl defaultBillAddress;
 	CreditCardImpl defaultPaymentInfo;
 	CustomerProfileImpl customerProfile;
-	
+	ShoppingCartSubsystem liveCart =  ShoppingCartSubsystemFacade.INSTANCE;
+	CreditVerificationFacade cvObj = new CreditVerificationFacade();  
+	OrderSubsystemFacade subOrderObj = new OrderSubsystemFacade(customerProfile);
 	
 	/** Use for loading order history,
 	 * default addresses, default payment info, 
@@ -153,4 +163,59 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 			String expirationDate, String cardNum, String cardType) {
 		return new CreditCardImpl(nameOnCard, expirationDate, cardNum, cardType);
 	}
+	
+    public void setShippingAddressInCart(Address addr){
+    	shoppingCartSubsystem.setShippingAddress(addr);
+    }
+    public List<Order> getOrderHistory(){
+    	
+    	try {
+			return subOrderObj.getOrderHistory();
+		} catch (BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return orderHistory;
+    }
+    public void setBillingAddressInCart(Address addr){
+    	shoppingCartSubsystem.setBillingAddress(addr);
+    }
+   
+    public void saveShoppingCart() throws BackendException{
+    	shoppingCartSubsystem.saveLiveCart();
+    }
+    public void checkCreditCard(CreditCard cc) throws BusinessException{
+    	try {
+    		cvObj.checkCreditCard(customerProfile, defaultBillAddress, defaultPaymentInfo,4324);
+		} catch (MiddlewareException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	//amount
+    }
+
+    public ShoppingCartSubsystem getShoppingCart()
+    {
+    	return liveCart;
+    	
+    	
+    }
+    public void refreshAfterSubmit() throws BackendException{
+    	
+    	
+    	
+    }
+    
+    public void setPaymentInfoInCart(CreditCard cc){
+    	liveCart.setPaymentInfo(cc);
+    	
+    	
+    }
+	
+    public void submitOrder() throws BackendException{
+      	subOrderObj.submitOrder(liveCart.getLiveCart());
+    }
+
+	
+	
 }

@@ -71,7 +71,7 @@ public interface CustomerSubsystem {
 //     * read from the database). Used by other subsystems
 //     * to read current user's order history (not used during login process)
 //     * */
-//    public List<Order> getOrderHistory();
+    public List<Order> getOrderHistory();
 //    
 //    
 //    
@@ -81,38 +81,38 @@ public interface CustomerSubsystem {
 //    /** 
 //     *  Stores address as shipping address in this customer's shopping cart 
 //	 */
-//    public void setShippingAddressInCart(Address addr);
-//    
+    public void setShippingAddressInCart(Address addr);
+    
 //    /** 
 //     * Stores address as billing address in this customer's shopping cart 
 //	 */
-//    public void setBillingAddressInCart(Address addr);
+    public void setBillingAddressInCart(Address addr);
 //    
 //    /** Stores credit card in this customer's shopping cart */
-//    public void setPaymentInfoInCart(CreditCard cc);
+    public void setPaymentInfoInCart(CreditCard cc); 
 //    
 //    
 //    /** 
 //     *  Called when user submits final order -- customer sends its shopping cart to order subsystem
 //	 *  and order subsystem extracts items from shopping cart and prepares order
 //	 */
-//    public void submitOrder() throws BackendException;
+    public void submitOrder() throws BackendException; 
 //    
 //    /**
 //     * After an order is submitted, the list of orders cached in CustomerSubsystemFacade
 //     * will be out of date; this method should cause order data to be reloaded
 //     */
-//    public void refreshAfterSubmit() throws BackendException;
+    public void refreshAfterSubmit() throws BackendException;
 //    
 //    /**
 //	 * Used whenever the shopping cart needs to be displayed
 //	 */
-//    public ShoppingCartSubsystem getShoppingCart();
+    public ShoppingCartSubsystem getShoppingCart(); 
 //    
 //    /**
 //	 * Saves shopping cart to database
 //	 */
-//    public void saveShoppingCart() throws BackendException;
+    public void saveShoppingCart() throws BackendException;
 //		
 //   
 //
@@ -120,7 +120,7 @@ public interface CustomerSubsystem {
 //    /**
 //     * Checks validity of credit card against the Credit Verification system
 //     */
-//    public void checkCreditCard(CreditCard cc) throws BusinessException;
+    public void checkCreditCard(CreditCard cc) throws BusinessException;
 //    
 //    //TESTING
 //    public DbClassAddressForTest getGenericDbClassAddress(); 
