@@ -1,6 +1,9 @@
 package business.usecasecontrol;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import business.BusinessConstants;
 import business.SessionCache;
@@ -60,6 +63,30 @@ public enum CheckoutController  {
 	public void submitFinalOrder() throws BackendException {
 		//implement
 		cust.submitOrder();
+	}
+	
+	public List<Address> retrieveShippingAddresses(){
+		try {
+			List<Address> allAddress = cust.getAllAddresses();
+			
+			return allAddress.stream().filter(address -> address.isShippingAddress()).collect(Collectors.toList());
+		} catch (BackendException e) {
+			// TODO Auto-generated catch block
+			LOG.severe("An error has ocurred while fetching shipping addresses");
+		}
+		return new ArrayList<>();
+	}
+	
+	public List<Address> retrieveBillingAddresses(){
+		try {
+			List<Address> allAddress = cust.getAllAddresses();
+			
+			return allAddress.stream().filter(address -> address.isBillingAddress()).collect(Collectors.toList());
+		} catch (BackendException e) {
+			// TODO Auto-generated catch block
+			LOG.severe("An error has ocurred while fetching billing addresses");
+		}
+		return new ArrayList<>();
 	}
 
 
