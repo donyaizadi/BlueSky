@@ -304,9 +304,15 @@ public enum CheckoutUIControl {
 		@Override
 		public void handle(ActionEvent evt) {
 			orderCompleteWindow = new OrderCompleteWindow();
-			orderCompleteWindow.show();
-			finalOrderWindow.clearMessages();
-			finalOrderWindow.hide();
+			try {
+				CheckoutController.INSTANCE.submitFinalOrder();
+				orderCompleteWindow.show();
+				finalOrderWindow.clearMessages();
+				finalOrderWindow.hide();
+			} catch (BackendException e) {
+				LOG.severe("Error ocurred trying to save the order");
+			}
+
 		}
 
 	}

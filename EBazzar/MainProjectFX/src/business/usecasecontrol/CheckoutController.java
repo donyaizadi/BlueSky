@@ -24,7 +24,6 @@ public enum CheckoutController  {
 	public void runShoppingCartRules() throws RuleException, BusinessException {
 		//implement
 	 ShoppingCartSubsystem sc = ShoppingCartSubsystemFacade.INSTANCE;
-	 sc.setCustomerProfile(cust.getCustomerProfile());
 	 sc.runShoppingCartRules();
 	}
 	
@@ -41,7 +40,6 @@ public enum CheckoutController  {
 	public void runFinalOrderRules(ShoppingCartSubsystem scss) throws RuleException, BusinessException {
 		//implement
 		 ShoppingCartSubsystem sc = ShoppingCartSubsystemFacade.INSTANCE;
-		 sc.setCustomerProfile(cust.getCustomerProfile());
 		 sc.runFinalOrderRules();
 	}
 	
@@ -50,18 +48,18 @@ public enum CheckoutController  {
 	 */
 	public void verifyCreditCard() throws BusinessException {
 		//implement
+		ShoppingCartSubsystem sc=  ShoppingCartSubsystemFacade.INSTANCE;
+		cust.checkCreditCard(sc.getLiveCart().getPaymentInfo()); 
 	}
 	
 	public void saveNewAddress(Address addr) throws BackendException {
-		CustomerSubsystem cust = 
-			(CustomerSubsystem)SessionCache.getInstance().get(BusinessConstants.CUSTOMER);			
 		cust.saveNewAddress(addr);
 	}
 	
 	/** Asks Customer Subsystem to submit final order */
 	public void submitFinalOrder() throws BackendException {
 		//implement
-		
+		cust.submitOrder();
 	}
 
 
