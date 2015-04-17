@@ -2,13 +2,42 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/SoftEngWorkspace/externalJars/creditVerifSystem.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/SoftEngWorkspace/externalJars/jess.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/SoftEngWorkspace/externalJars/junit.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/SoftEngWorkspace/externalJars/mysql-connector-java-5.1.20-bin.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/SoftEngWorkspace/externalJars/rulesencoding.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/SoftEngWorkspace/externalJars/rulesengine.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/SoftEngWorkspace/externalJars/slf4j-api-1.7.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Luis/SoftEngWorkspace/externalJars/slf4j-jdk14-1.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/creditVerifSystem.jar"/>
+	<classpathentry kind="lib" path="lib/jess.jar"/>
+	<classpathentry kind="lib" path="lib/junit.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.20-bin.jar"/>
+	<classpathentry kind="lib" path="lib/rulesencoding.jar"/>
+	<classpathentry kind="lib" path="lib/rulesengine.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-jdk14-1.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/other/aopalliance.jar"/>
+	<classpathentry kind="lib" path="lib/other/asm.jar"/>
+	<classpathentry kind="lib" path="lib/other/cglib-nodep-2.2.jar"/>
+	<classpathentry kind="lib" path="lib/other/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/other/commons-dbcp-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/other/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/other/commons-pool-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/other/javaee-api-6.0.jar"/>
+	<classpathentry kind="lib" path="lib/other/mockito-all-1.9.0.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.aop-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.asm-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.aspects-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.beans-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.context-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.context.support-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.core-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.expression-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.instrument-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.instrument.tomcat-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.jdbc-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.jms-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.orm-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.oxm-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.test-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.transaction-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.web-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.web.portlet-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/org.springframework.web.struts-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
