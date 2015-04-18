@@ -9,6 +9,7 @@ import business.externalinterfaces.Address;
 import business.externalinterfaces.CreditCard;
 import business.externalinterfaces.CustomerProfile;
 import business.usecasecontrol.BrowseAndSelectController;
+import business.usecasecontrol.CheckoutController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import presentation.gui.GuiConstants;
@@ -32,20 +33,26 @@ public enum CheckoutData {
 	
 	//Customer Bill Address Data
 	private ObservableList<CustomerPres> billAddresses = loadBillAddresses();
-	
-	private ObservableList<CustomerPres> loadShipAddresses() {		
+	private ObservableList<CustomerPres> loadShipAddresses() {	
+		//load Fake data
 	    List<CustomerPres> list = DefaultData.CUSTS_ON_FILE
 						   .stream()
 						   .filter(cust -> cust.getAddress().isShippingAddress())
 						   .collect(Collectors.toList());
+		//load Data from DB
+//		List<CustomerPres> list = CheckoutController.INSTANCE.retrieveShippingAddresses();
 		return FXCollections.observableList(list);				   
 										   
 	}
 	private ObservableList<CustomerPres> loadBillAddresses() {
+		//load Fake data
 		List list = DefaultData.CUSTS_ON_FILE
 				   .stream()
 				   .filter(cust -> cust.getAddress().isBillingAddress())
 				   .collect(Collectors.toList());
+		
+		//load Data from DB
+//		List list = CheckoutController.INSTANCE.retrieveBillingAddresses();
 		return FXCollections.observableList(list);
 	}
 	public ObservableList<CustomerPres> getCustomerShipAddresses() {

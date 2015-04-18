@@ -1,6 +1,9 @@
 package business.usecasecontrol;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import business.BusinessConstants;
 import business.SessionCache;
@@ -24,7 +27,6 @@ public enum CheckoutController  {
 	public void runShoppingCartRules() throws RuleException, BusinessException {
 		//implement
 	 ShoppingCartSubsystem sc = ShoppingCartSubsystemFacade.INSTANCE;
-	 sc.setCustomerProfile(cust.getCustomerProfile());
 	 sc.runShoppingCartRules();
 	}
 	
@@ -41,7 +43,6 @@ public enum CheckoutController  {
 	public void runFinalOrderRules(ShoppingCartSubsystem scss) throws RuleException, BusinessException {
 		//implement
 		 ShoppingCartSubsystem sc = ShoppingCartSubsystemFacade.INSTANCE;
-		 sc.setCustomerProfile(cust.getCustomerProfile());
 		 sc.runFinalOrderRules();
 	}
 	
@@ -50,18 +51,42 @@ public enum CheckoutController  {
 	 */
 	public void verifyCreditCard() throws BusinessException {
 		//implement
+		ShoppingCartSubsystem sc=  ShoppingCartSubsystemFacade.INSTANCE;
+		cust.checkCreditCard(sc.getLiveCart().getPaymentInfo()); 
 	}
 	
 	public void saveNewAddress(Address addr) throws BackendException {
-		CustomerSubsystem cust = 
-			(CustomerSubsystem)SessionCache.getInstance().get(BusinessConstants.CUSTOMER);			
 		cust.saveNewAddress(addr);
 	}
 	
 	/** Asks Customer Subsystem to submit final order */
 	public void submitFinalOrder() throws BackendException {
 		//implement
-		
+		cust.submitOrder();
+	}
+	
+	public List<Address> retrieveShippingAddresses(){
+		try {
+			List<Address> allAddress = cust.getAllAddresses();
+			
+			return allAddress.stream().filter(address -> address.isShippingAddress()).collect(Collectors.toList());
+		} catch (BackendException e) {
+			// TODO Auto-generated catch block
+			LOG.severe("An error has ocurred while fetching shipping addresses");
+		}
+		return new ArrayList<>();
+	}
+	
+	public List<Address> retrieveBillingAddresses(){
+		try {
+			List<Address> allAddress = cust.getAllAddresses();
+			
+			return allAddress.stream().filter(address -> address.isBillingAddress()).collect(Collectors.toList());
+		} catch (BackendException e) {
+			// TODO Auto-generated catch block
+			LOG.severe("An error has ocurred while fetching billing addresses");
+		}
+		return new ArrayList<>();
 	}
 
 

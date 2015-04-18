@@ -141,6 +141,8 @@ public enum ShoppingCartSubsystemFacade implements ShoppingCartSubsystem {
 	public void runFinalOrderRules() throws RuleException, BusinessException {
 		// TODO Auto-generated method stub
 		//why does this need to be here
+		Rules transferObject = new RulesFinalOrder(liveCart);
+		transferObject.runRules();
 	}
 
 }
