@@ -123,7 +123,7 @@ public interface CustomerSubsystem {
     public void checkCreditCard(CreditCard cc) throws BusinessException;
 //    
 //    //TESTING
-//    public DbClassAddressForTest getGenericDbClassAddress(); 
-//    public CustomerProfile getGenericCustomerProfile();
+    public DbClassAddressForTest getGenericDbClassAddress(); 
+    public CustomerProfile getGenericCustomerProfile();
 //    
 }

@@ -18,6 +18,7 @@ import business.externalinterfaces.CartItem;
 import business.externalinterfaces.CreditCard;
 import business.externalinterfaces.CustomerProfile;
 import business.externalinterfaces.CustomerSubsystem;
+import business.externalinterfaces.DbClassAddressForTest;
 import business.externalinterfaces.Order;
 import business.externalinterfaces.OrderSubsystem;
 import business.externalinterfaces.Rules;
@@ -34,6 +35,7 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	AddressImpl defaultBillAddress;
 	CreditCardImpl defaultPaymentInfo;
 	CustomerProfileImpl customerProfile;
+	DbClassAddress defaultDbClassAddress;
 	ShoppingCartSubsystem liveCart =  ShoppingCartSubsystemFacade.INSTANCE;
 	CreditVerificationFacade cvObj = new CreditVerificationFacade();  
 	OrderSubsystemFacade subOrderObj = new OrderSubsystemFacade(customerProfile);
@@ -168,13 +170,6 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
     	shoppingCartSubsystem.setShippingAddress(addr);
     }
     public List<Order> getOrderHistory(){
-    	
-    	try {
-			return subOrderObj.getOrderHistory();
-		} catch (BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return orderHistory;
     }
     public void setBillingAddressInCart(Address addr){
@@ -186,7 +181,7 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
     }
     public void checkCreditCard(CreditCard cc) throws BusinessException{
     	try {
-    		cvObj.checkCreditCard(customerProfile, defaultBillAddress, defaultPaymentInfo,4324);
+    		cvObj.checkCreditCard(customerProfile, defaultBillAddress, defaultPaymentInfo, 1234);
 		} catch (MiddlewareException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -202,20 +197,31 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
     }
     public void refreshAfterSubmit() throws BackendException{
     	
-    	
+    	try {
+    		subOrderObj.getOrderHistory();
+		} catch (BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	
     }
     
     public void setPaymentInfoInCart(CreditCard cc){
     	liveCart.setPaymentInfo(cc);
-    	
-    	
+   	
     }
 	
     public void submitOrder() throws BackendException{
       	subOrderObj.submitOrder(liveCart.getLiveCart());
     }
 
-	
+    public DbClassAddressForTest getGenericDbClassAddress()
+    {
+    	return defaultDbClassAddress;
+    }
+    public CustomerProfile getGenericCustomerProfile()
+    {
+    	return customerProfile;
+    }
 	
 }

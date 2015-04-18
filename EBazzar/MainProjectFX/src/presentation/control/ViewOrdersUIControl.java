@@ -29,7 +29,7 @@ public enum ViewOrdersUIControl {
 			ordersWindow.setData(FXCollections.observableList(ViewOrdersData.INSTANCE.getOrders()));
 			ordersWindow.show();
 	        primaryStage.hide();			
-		}	
+		}			
 	}
 	public ViewOrdersHandler getViewOrdersHandler() {
 		return new ViewOrdersHandler();
