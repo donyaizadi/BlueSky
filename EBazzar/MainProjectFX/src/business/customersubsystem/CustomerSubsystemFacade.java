@@ -10,6 +10,8 @@ import middleware.creditverifcation.CreditVerificationFacade;
 import middleware.exceptions.DatabaseException;
 import middleware.exceptions.MiddlewareException;
 import middleware.externalinterfaces.CreditVerification;
+import business.BusinessConstants;
+import business.SessionCache;
 import business.exceptions.BackendException;
 import business.exceptions.BusinessException;
 import business.exceptions.RuleException;
@@ -51,6 +53,8 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 		loadDefaultShipAddress();
 		loadDefaultBillAddress();
 		loadDefaultPaymentInfo();
+		
+		
 		shoppingCartSubsystem = ShoppingCartSubsystemFacade.INSTANCE;
 		shoppingCartSubsystem.setCustomerProfile(customerProfile);
 		shoppingCartSubsystem.retrieveSavedCart();
@@ -69,18 +73,27 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
     }
     void loadDefaultShipAddress() throws BackendException {
     	//implement
+    	DbClassAddress objU = new DbClassAddress();
+    	defaultShipAddress =  objU.getDefaultShipAddress();
+    	
     }
 	void loadDefaultBillAddress() throws BackendException {
 		//implement
+		DbClassAddress objU = new DbClassAddress();
+    	defaultBillAddress =  objU.getDefaultBillAddress();
+
 	}
 	void loadDefaultPaymentInfo() throws BackendException {
-		//implement
+		//implement		
+		
+		
+		
 	}
 	void loadOrderData() throws BackendException {
 
 		// retrieve the order history for the customer and store here
 		orderSubsystem = new OrderSubsystemFacade(customerProfile);
-		//orderHistory = orderSubsystem.getOrderHistory();
+		orderHistory = orderSubsystem.getOrderHistory();
 		
 	
 	}
@@ -217,11 +230,13 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 
     public DbClassAddressForTest getGenericDbClassAddress()
     {
-    	return defaultDbClassAddress;
+    	DbClassAddressForTest objh = getGenericDbClassAddress();
+    	return objh;
     }
     public CustomerProfile getGenericCustomerProfile()
     {
-    	return customerProfile;
+    	 CustomerProfile objTest = (CustomerProfile) new CustomerSubsystemFacade();
+    	return objTest;
     }
 	
 }
