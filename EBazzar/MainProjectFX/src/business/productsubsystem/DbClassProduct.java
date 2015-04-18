@@ -57,7 +57,6 @@ class DbClassProduct implements DbClass {
 		} else if (queryType.equals(SAVE_NEW_PROD)) {
 			buildSaveNewQuery();
 		}
-
 	}
 
 	private void buildProdTableQuery() {

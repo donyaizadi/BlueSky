@@ -6,6 +6,9 @@ import javafx.beans.property.SimpleStringProperty;
 public class CatalogPres {
 	private Catalog catalog;
     public CatalogPres() {}
+    public CatalogPres(Catalog catalog) {
+    	this.catalog = catalog;
+    }
     
     public void setCatalog(Catalog catalog) {
     	this.catalog = catalog;

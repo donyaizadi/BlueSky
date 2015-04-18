@@ -27,18 +27,18 @@ public interface ProductSubsystem {
 //	/** retrieves list of catalogs from database */
 
 //	
-//	public Catalog getCatalogFromName(String catName) throws BackendException;
+	public Catalog getCatalogFromName(String catName) throws BackendException;
 
 //	/** saves newly created catalog */
-//	public void saveNewCatalog(Catalog catalog) throws BackendException;
+	public void saveNewCatalog(Catalog catalog) throws BackendException;
 //
 //	/** saves a new product obtained from user input */
-//	public void saveNewProduct(Product product) throws BackendException;
+	public void saveNewProduct(Product product) throws BackendException;
 //
 //	/** deletes a product obtained from user input */
-//	public void deleteProduct(Product product) throws BackendException;
+	public void deleteProduct(Product product) throws BackendException;
 //	
 //	/** deletes a catalog obtained from user input */
-//	public void deleteCatalog(Catalog catalog) throws BackendException;
+	public void deleteCatalog(Catalog catalog) throws BackendException;
 
 }

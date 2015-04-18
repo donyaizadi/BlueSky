@@ -69,7 +69,40 @@ public class ProductSubsystemFacade implements ProductSubsystem {
     }
 	
 	public int readQuantityAvailable(Product product) {
-		//IMPLEMENT
-		return 5;
+		int quantity = 0;
+		try {
+			DbClassProduct dbclass = new DbClassProduct();
+			quantity = dbclass.readProduct(product.getProductId()).getQuantityAvail();
+		} catch (DatabaseException e) {
+			e.printStackTrace();
+		}
+			
+		return quantity;
+	}
+	
+	@Override
+	public Catalog getCatalogFromName(String catName) throws BackendException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void saveNewCatalog(Catalog catalog) throws BackendException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void saveNewProduct(Product product) throws BackendException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void deleteProduct(Product product) throws BackendException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void deleteCatalog(Catalog catalog) throws BackendException {
+		// TODO Auto-generated method stub
+		
 	}
 }

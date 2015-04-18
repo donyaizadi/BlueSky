@@ -9,6 +9,9 @@ import business.externalinterfaces.*;
 public class ProductPres {
 	private Product product;
     public ProductPres() {}
+    public ProductPres(Product product) {
+    	this.product = product;
+    }
     
     public void setProduct(Product product) {
     	this.product = product;

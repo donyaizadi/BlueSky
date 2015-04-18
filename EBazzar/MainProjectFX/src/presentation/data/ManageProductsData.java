@@ -2,22 +2,26 @@ package presentation.data;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import presentation.gui.GuiUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import business.CartItemData;
+import business.exceptions.BackendException;
 import business.externalinterfaces.*;
 import business.productsubsystem.ProductSubsystemFacade;
 
 public enum ManageProductsData {
 	INSTANCE;
+	ProductSubsystem productSubsystem = new ProductSubsystemFacade();
 	
 	private CatalogPres defaultCatalog = readDefaultCatalogFromDataSource();
 	private CatalogPres readDefaultCatalogFromDataSource() {
-		return DefaultData.CATALOG_LIST_DATA.get(0);
+		return readCatalogsFromDataSource().get(0);
 	}
 	public CatalogPres getDefaultCatalog() {
 		return defaultCatalog;
@@ -36,7 +40,26 @@ public enum ManageProductsData {
 	
 	/** Initializes the productsMap */
 	private ObservableMap<CatalogPres, List<ProductPres>> readProductsFromDataSource() {
-		return DefaultData.PRODUCT_LIST_DATA;
+		Map<CatalogPres, List<ProductPres>> productsMap = new HashMap<CatalogPres, List<ProductPres>>();
+		
+		List<CatalogPres> catPresList = readCatalogsFromDataSource();
+		for (CatalogPres catPres : catPresList) {
+			List<Product> products;
+			try {
+				products = productSubsystem.getProductList(catPres.getCatalog());
+				
+				List<ProductPres> productsPres = new ArrayList<ProductPres>();
+				for (Product product : products) {
+					productsPres.add(new ProductPres(product));
+				}
+				
+				productsMap.put(catPres, productsPres);
+			} catch (BackendException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return FXCollections.observableMap(productsMap);
 	}
 	
 	/** Delivers the requested products list to the UI */
@@ -80,7 +103,16 @@ public enum ManageProductsData {
 
 	/** Initializes the catalogList */
 	private ObservableList<CatalogPres> readCatalogsFromDataSource() {
-		return FXCollections.observableList(DefaultData.CATALOG_LIST_DATA);
+		List<CatalogPres> catPres = new ArrayList<CatalogPres>();
+		try {
+			for (Catalog cat : productSubsystem.getCatalogList()) {
+				catPres.add(new CatalogPres(cat));
+			}
+		} catch (BackendException e) {
+			e.printStackTrace();
+		}
+		
+		return FXCollections.observableList(catPres);
 	}
 
 	/** Delivers the already-populated catalogList to the UI */
@@ -145,6 +177,7 @@ public enum ManageProductsData {
 			productsMap.put(selectedCatalog, list);
 		}
 	}
+	
 	public ManageProductsSynchronizer getManageProductsSynchronizer() {
 		return new ManageProductsSynchronizer();
 	}
@@ -156,6 +189,7 @@ public enum ManageProductsData {
 			catalogList = list;
 		}
 	}
+	
 	public ManageCatalogsSynchronizer getManageCatalogsSynchronizer() {
 		return new ManageCatalogsSynchronizer();
 	}
