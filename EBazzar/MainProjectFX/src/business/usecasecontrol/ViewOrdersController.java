@@ -17,8 +17,8 @@ import business.ordersubsystem.OrderSubsystemFacade;
 /**
  * @author pcorazza
  */
-public class ViewOrdersController   {
-	
+public enum ViewOrdersController   {
+	INSTANCE;	
 
 	CustomerSubsystem custSubsystem = (CustomerSubsystem) SessionCache.getInstance().get(BusinessConstants.CUSTOMER);
 	OrderSubsystem orderSubsystemObj = new OrderSubsystemFacade(custSubsystem.getCustomerProfile());

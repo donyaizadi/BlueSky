@@ -2,6 +2,10 @@ package presentation.data;
 
 import java.util.List;
 
+import business.externalinterfaces.Order;
+import business.usecasecontrol.ViewOrdersController;
+import business.util.Util;
+
 public enum ViewOrdersData {
 	INSTANCE;
 	private OrderPres selectedOrder;
@@ -13,6 +17,8 @@ public enum ViewOrdersData {
 	}
 	
 	public List<OrderPres> getOrders() {
-		return DefaultData.ALL_ORDERS;
+		//return DefaultData.ALL_ORDERS;
+		List<Order> list = ViewOrdersController.INSTANCE.readOrders();		
+		return Util.orderListToOrderPresList(list);
 	}
 }

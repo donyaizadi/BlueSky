@@ -1,17 +1,13 @@
 package business.customersubsystem;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
-
-import com.sun.org.apache.regexp.internal.recompile;
+import java.util.logging.Logger;
 
 import middleware.creditverifcation.CreditVerificationFacade;
 import middleware.exceptions.DatabaseException;
 import middleware.exceptions.MiddlewareException;
 import middleware.externalinterfaces.CreditVerification;
-import business.BusinessConstants;
-import business.SessionCache;
 import business.exceptions.BackendException;
 import business.exceptions.BusinessException;
 import business.exceptions.RuleException;
@@ -24,12 +20,13 @@ import business.externalinterfaces.DbClassAddressForTest;
 import business.externalinterfaces.Order;
 import business.externalinterfaces.OrderSubsystem;
 import business.externalinterfaces.Rules;
+import business.externalinterfaces.ShoppingCart;
 import business.externalinterfaces.ShoppingCartSubsystem;
 import business.ordersubsystem.OrderSubsystemFacade;
-import business.shoppingcartsubsystem.DbClassShoppingCart;
 import business.shoppingcartsubsystem.ShoppingCartSubsystemFacade;
 
 public class CustomerSubsystemFacade implements CustomerSubsystem {
+	private static final Logger LOGGER = Logger.getLogger(CustomerSubsystemFacade.class.getName());
 	ShoppingCartSubsystem shoppingCartSubsystem;
 	OrderSubsystem orderSubsystem;
 	List<Order> orderHistory;
@@ -37,10 +34,7 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	AddressImpl defaultBillAddress;
 	CreditCardImpl defaultPaymentInfo;
 	CustomerProfileImpl customerProfile;
-	DbClassAddress defaultDbClassAddress;
-	ShoppingCartSubsystem liveCart =  ShoppingCartSubsystemFacade.INSTANCE;
-	CreditVerificationFacade cvObj = new CreditVerificationFacade();  
-	OrderSubsystemFacade subOrderObj = new OrderSubsystemFacade(customerProfile);
+	
 	
 	/** Use for loading order history,
 	 * default addresses, default payment info, 
@@ -53,8 +47,6 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 		loadDefaultShipAddress();
 		loadDefaultBillAddress();
 		loadDefaultPaymentInfo();
-		
-		
 		shoppingCartSubsystem = ShoppingCartSubsystemFacade.INSTANCE;
 		shoppingCartSubsystem.setCustomerProfile(customerProfile);
 		shoppingCartSubsystem.retrieveSavedCart();
@@ -71,29 +63,35 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 			throw new BackendException(e);
 		}
     }
+   
     void loadDefaultShipAddress() throws BackendException {
-    	//implement
-    	DbClassAddress objU = new DbClassAddress();
-    	defaultShipAddress =  objU.getDefaultShipAddress();
-    	
+    	DbClassAddress dbClassAddress = new DbClassAddress();
+    	try {
+			dbClassAddress.readDefaultShipAddress(customerProfile);
+		} catch (DatabaseException e) {
+			e.printStackTrace();
+		}
+        defaultShipAddress = dbClassAddress.getDefaultShipAddress();
     }
 	void loadDefaultBillAddress() throws BackendException {
-		//implement
-		DbClassAddress objU = new DbClassAddress();
-    	defaultBillAddress =  objU.getDefaultBillAddress();
-
+		    DbClassAddress dbClassAddress = new DbClassAddress();
+		    try {
+				dbClassAddress.readDefaultBillAddress(customerProfile);
+			} catch (DatabaseException e) {
+				e.printStackTrace();
+			}
+	        defaultBillAddress = dbClassAddress.getDefaultBillAddress();
 	}
 	void loadDefaultPaymentInfo() throws BackendException {
-		//implement		
-		
-		
-		
+		//implement 
+		//looking for DBClassCreditCard
+
 	}
 	void loadOrderData() throws BackendException {
-
 		// retrieve the order history for the customer and store here
 		orderSubsystem = new OrderSubsystemFacade(customerProfile);
 		orderHistory = orderSubsystem.getOrderHistory();
+		LOGGER.info("total count of order history =  " + orderHistory.size());
 		
 	
 	}
@@ -115,7 +113,9 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 			dbClass.setAddress(addr);
 			dbClass.saveAddress(customerProfile);
 		} catch(DatabaseException e) {
+			
 			throw new BackendException(e);
+			
 		}
     }
     
@@ -141,8 +141,15 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	 * address in ship/bill window 
 	 */
     public List<Address> getAllAddresses() throws BackendException {
-    	return new ArrayList<Address>();
+    	//return new ArrayList<Address>();
     	//implement
+    	DbClassAddress dbClassAddress = new DbClassAddress();
+    	try {
+    		dbClassAddress.readAllAddresses(customerProfile);
+            return dbClassAddress.getAddressList();
+        } catch (DatabaseException e) {
+            throw new BackendException(e);
+        }
     }
 
 	public Address runAddressRules(Address addr) throws RuleException,
@@ -179,64 +186,101 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 		return new CreditCardImpl(nameOnCard, expirationDate, cardNum, cardType);
 	}
 	
-    public void setShippingAddressInCart(Address addr){
-    	shoppingCartSubsystem.setShippingAddress(addr);
-    }
-    public List<Order> getOrderHistory(){
-		return orderHistory;
-    }
-    public void setBillingAddressInCart(Address addr){
-    	shoppingCartSubsystem.setBillingAddress(addr);
-    }
-   
-    public void saveShoppingCart() throws BackendException{
-    	shoppingCartSubsystem.saveLiveCart();
-    }
-    public void checkCreditCard(CreditCard cc) throws BusinessException{
-    	try {
-    		cvObj.checkCreditCard(customerProfile, defaultBillAddress, defaultPaymentInfo, 1234);
+	@Override
+	public List<Order> getOrderHistory() {
+		// TODO Auto-generated method stub
+		//return unmodifiable list
+		return Collections.unmodifiableList(orderHistory);
+	}
+
+	@Override
+	public void setShippingAddressInCart(Address addr) {
+		// TODO Auto-generated method stub
+		shoppingCartSubsystem.setShippingAddress(addr);
+		
+	}
+
+	@Override
+	public void setBillingAddressInCart(Address addr) {
+		// TODO Auto-generated method stub
+		shoppingCartSubsystem.setBillingAddress(addr);
+		
+	}
+
+	@Override
+	public void setPaymentInfoInCart(CreditCard cc) {
+		// TODO Auto-generated method stub
+		shoppingCartSubsystem.setPaymentInfo(cc);
+
+		
+	}
+
+	@Override
+	public void submitOrder() throws BackendException {
+		// TODO Auto-generated method stub
+		orderSubsystem.submitOrder(shoppingCartSubsystem.getLiveCart());
+		
+	}
+
+	@Override
+	public void refreshAfterSubmit() throws BackendException {
+		// TODO Auto-generated method stub
+		loadOrderData();
+		
+	}
+
+	@Override
+	public ShoppingCartSubsystem getShoppingCart() {
+		// TODO Auto-generated method stub
+		return shoppingCartSubsystem;
+	}
+
+	@Override
+	public void saveShoppingCart() throws BackendException {
+		// TODO Auto-generated method stub
+		
+		//set default values for payment and address
+        if (shoppingCartSubsystem.getLiveCart().getShippingAddress() == null) {
+            shoppingCartSubsystem.setShippingAddress(defaultShipAddress);
+        }
+        if (shoppingCartSubsystem.getLiveCart().getBillingAddress() == null) {
+            shoppingCartSubsystem.setBillingAddress(defaultBillAddress);
+        }
+        if (shoppingCartSubsystem.getLiveCart().getPaymentInfo() == null) {
+            shoppingCartSubsystem.setPaymentInfo(this.defaultPaymentInfo);
+        }
+        // save live cart
+        shoppingCartSubsystem.saveLiveCart();
+		
+	}
+
+	@Override
+	public void checkCreditCard(CreditCard cc) throws BusinessException {
+		// TODO Auto-generated method stub
+		ShoppingCart shoppingCart = ShoppingCartSubsystemFacade.INSTANCE.getLiveCart();
+		List<CartItem> cartItemsList = ShoppingCartSubsystemFacade.INSTANCE.getLiveCartItems();
+		Address billingAddress = shoppingCart.getBillingAddress();
+		CreditCard creditCard = shoppingCart.getPaymentInfo();
+	    Double amount = (double) 55;
+		CreditVerification creditVerif = new CreditVerificationFacade();
+		try {
+			creditVerif.checkCreditCard(customerProfile, billingAddress, creditCard,new Double(amount));
 		} catch (MiddlewareException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new BusinessException(e);
 		}
-    	//amount
-    }
-
-    public ShoppingCartSubsystem getShoppingCart()
-    {
-    	return liveCart;
-    	
-    	
-    }
-    public void refreshAfterSubmit() throws BackendException{
-    	
-    	try {
-    		subOrderObj.getOrderHistory();
-		} catch (BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    }
-    
-    public void setPaymentInfoInCart(CreditCard cc){
-    	liveCart.setPaymentInfo(cc);
-   	
-    }
+		
+	}
 	
-    public void submitOrder() throws BackendException{
-      	subOrderObj.submitOrder(liveCart.getLiveCart());
-    }
 
-    public DbClassAddressForTest getGenericDbClassAddress()
-    {
-    	DbClassAddressForTest objh = getGenericDbClassAddress();
-    	return objh;
-    }
-    public CustomerProfile getGenericCustomerProfile()
-    {
-    	 CustomerProfile objTest = (CustomerProfile) new CustomerSubsystemFacade();
-    	return objTest;
-    }
-	
+	@Override
+	public DbClassAddressForTest getGenericDbClassAddress() {
+		// TODO Auto-generated method stub
+		return new DbClassAddress();
+	}
+
+	@Override
+	public CustomerProfile getGenericCustomerProfile() {
+		// TODO Auto-generated method stub
+		return new CustomerProfileImpl(1, "Test_1", "Test_2");
+	}
 }

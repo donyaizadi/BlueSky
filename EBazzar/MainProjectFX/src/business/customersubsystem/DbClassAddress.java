@@ -78,13 +78,19 @@ class DbClassAddress implements DbClass, DbClassAddressForTest {
     }
 	
     void readDefaultShipAddress(CustomerProfile custProfile) throws DatabaseException {
-    	//implement     
+    	this.custProfile = custProfile;
+        queryType=READ_DEFAULT_SHIP;
+        dataAccessSS.atomicRead(this);
     }
     void readDefaultBillAddress(CustomerProfile custProfile) throws DatabaseException {
-    	//implement
+    	this.custProfile = custProfile;
+        queryType=READ_DEFAULT_BILL;
+        dataAccessSS.atomicRead(this); 
     }    
     public void readAllAddresses(CustomerProfile custProfile) throws DatabaseException {
-    	//implement         
+    	this.custProfile = custProfile;
+        queryType = READ;
+        dataAccessSS.atomicRead(this);    
     }
     
         
@@ -98,7 +104,7 @@ class DbClassAddress implements DbClass, DbClassAddressForTest {
     }
 	
     void buildSaveNewAddrQuery() throws DatabaseException {
-        query = "INSERT into altaddress " +
+        query = "INSERT into altshipaddress " +
         		"(addressid,custid,street,city,state,zip) " +
         		"VALUES(NULL," +
         				  custProfile.getCustId() + ",'" +
@@ -108,8 +114,7 @@ class DbClassAddress implements DbClass, DbClassAddressForTest {
         				  address.getZip() + "')";
     }
     void buildReadAllAddressesQuery() {
-    	//IMPLEMENT -- change custid = 1 to a valid custid 
-        query = "SELECT * from altaddress WHERE custid = 1";
+        query = "SELECT * from altshipaddress WHERE custid = 1";
     }
     void buildReadDefaultBillQuery() {
         query = "SELECT billaddress1, billaddress2, billcity, billstate, billzipcode " +
