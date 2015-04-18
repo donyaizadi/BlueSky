@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import business.BusinessConstants;
+import business.SessionCache;
 import business.customersubsystem.CustomerSubsystemFacade;
 import business.externalinterfaces.Address;
 import business.externalinterfaces.CreditCard;
 import business.externalinterfaces.CustomerProfile;
+import business.externalinterfaces.CustomerSubsystem;
 import business.usecasecontrol.BrowseAndSelectController;
 import business.usecasecontrol.CheckoutController;
 import javafx.collections.FXCollections;
@@ -33,6 +36,17 @@ public enum CheckoutData {
 	
 	//Customer Bill Address Data
 	private ObservableList<CustomerPres> billAddresses = loadBillAddresses();
+	
+	private List<CustomerPres> getShipAddresses(){
+		List<Address> shipAdresses = CheckoutController.INSTANCE.retrieveShippingAddresses();
+		CustomerSubsystem cust = 
+				(CustomerSubsystem)SessionCache.getInstance().get(BusinessConstants.CUSTOMER);
+		//transform to customerPres
+		List<CustomerPres> customerPresenter = shipAdresses.stream().map(customerPres ->{
+			return new CustomerPres(cust.getCustomerProfile(),customerPres); 
+		}).collect(Collectors.toList());
+		return customerPresenter;
+	}
 	private ObservableList<CustomerPres> loadShipAddresses() {	
 		//load Fake data
 	    List<CustomerPres> list = DefaultData.CUSTS_ON_FILE
@@ -40,9 +54,20 @@ public enum CheckoutData {
 						   .filter(cust -> cust.getAddress().isShippingAddress())
 						   .collect(Collectors.toList());
 		//load Data from DB
-//		List<CustomerPres> list = CheckoutController.INSTANCE.retrieveShippingAddresses();
+//		List<CustomerPres> list = getShipAddresses();
 		return FXCollections.observableList(list);				   
 										   
+	}
+	
+	private List<CustomerPres> getBillAddresses(){
+		List<Address> billAddresses = CheckoutController.INSTANCE.retrieveBillingAddresses();
+		CustomerSubsystem cust = 
+				(CustomerSubsystem)SessionCache.getInstance().get(BusinessConstants.CUSTOMER);
+		//transform to customerPres
+		List<CustomerPres> customerPresenter = billAddresses.stream().map(customerPres ->{
+			return new CustomerPres(cust.getCustomerProfile(),customerPres); 
+		}).collect(Collectors.toList());
+		return customerPresenter;
 	}
 	private ObservableList<CustomerPres> loadBillAddresses() {
 		//load Fake data
@@ -52,7 +77,7 @@ public enum CheckoutData {
 				   .collect(Collectors.toList());
 		
 		//load Data from DB
-//		List list = CheckoutController.INSTANCE.retrieveBillingAddresses();
+//		List list = getBillAddresses();
 		return FXCollections.observableList(list);
 	}
 	public ObservableList<CustomerPres> getCustomerShipAddresses() {
