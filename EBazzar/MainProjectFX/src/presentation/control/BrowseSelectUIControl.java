@@ -96,8 +96,7 @@ public enum BrowseSelectUIControl {
 			shoppingCartWindow = ShoppingCartWindow.INSTANCE;
 			boolean isLoggedIn = DataUtil.isLoggedIn();
 			if (!isLoggedIn) {
-				LoginUIControl loginControl = new LoginUIControl(shoppingCartWindow,
-						primaryStage, this);
+				LoginUIControl loginControl = new LoginUIControl(shoppingCartWindow, primaryStage, this);
 				loginControl.startLogin();
 			} else {
 				doUpdate();
@@ -105,7 +104,6 @@ public enum BrowseSelectUIControl {
 		}
 			
 	}
-	
 	
 	public OnlinePurchaseHandler getOnlinePurchaseHandler() {
 		return new OnlinePurchaseHandler();

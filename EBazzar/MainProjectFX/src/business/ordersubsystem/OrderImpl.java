@@ -14,7 +14,10 @@ public class OrderImpl implements Order {
 	private List<OrderItem> orderItems;
 	private int orderId;
 	private LocalDate date;
-	
+    private Address shipAddress;
+    private Address billAddress;
+    private CreditCard creditCard;
+    
 	public OrderImpl() {
 	}
 
@@ -55,44 +58,40 @@ public class OrderImpl implements Order {
 		this.date = date;
 	}
 
-	
-
-	
-
 	@Override
 	public Address getShipAddress() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.shipAddress;
 	}
 
 	@Override
 	public Address getBillAddress() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.billAddress;
 	}
 
 	@Override
 	public CreditCard getPaymentInfo() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.creditCard;
 	}
 
 	@Override
 	public void setShipAddress(Address add) {
 		// TODO Auto-generated method stub
-		
+		this.shipAddress = add;
 	}
 
 	@Override
 	public void setBillAddress(Address add) {
 		// TODO Auto-generated method stub
-		
+		this.billAddress = add;		
 	}
 
 	@Override
 	public void setPaymentInfo(CreditCard cc) {
 		// TODO Auto-generated method stub
-		
+		this.creditCard = cc;		
 	}
 	
 }
