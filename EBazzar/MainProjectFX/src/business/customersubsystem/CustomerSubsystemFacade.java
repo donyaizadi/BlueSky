@@ -90,8 +90,8 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	void loadOrderData() throws BackendException {
 		// retrieve the order history for the customer and store here
 		orderSubsystem = new OrderSubsystemFacade(customerProfile);
-		orderHistory = orderSubsystem.getOrderHistory();
-		LOGGER.info("total count of order history =  " + orderHistory.size());
+		//orderHistory = orderSubsystem.getOrderHistory();
+		//LOGGER.info("total count of order history =  " + orderHistory.size());
 		
 	
 	}

@@ -1,5 +1,8 @@
 package presentation.control;
 
+import java.util.logging.Logger;
+
+import business.customersubsystem.CustomerSubsystemFacade;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,6 +26,7 @@ public enum ViewOrdersUIControl {
 	}
 	
 	private class ViewOrdersHandler implements EventHandler<ActionEvent> {
+
 		@Override
 		public void handle(ActionEvent evt) {
 			ordersWindow = new OrdersWindow(primaryStage);
