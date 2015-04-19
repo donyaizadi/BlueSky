@@ -3,6 +3,7 @@ package business.productsubsystem;
 import java.sql.ResultSet;
 import java.util.logging.Logger;
 
+import business.externalinterfaces.Catalog;
 import middleware.DbConfigProperties;
 import middleware.dataaccess.DataAccessSubsystemFacade;
 import middleware.exceptions.DatabaseException;
@@ -21,17 +22,26 @@ public class DbClassCatalog implements DbClass {
 	private String query;
     private String queryType;
     private final String SAVE = "Save";
+    private final String DELETE_CATALOG = "DeleteCatalog";
     
-    public void saveNewCatalog(String name) throws DatabaseException {
+    public Integer saveNewCatalog(String name) throws DatabaseException {
     	this.catalogName = name;
     	queryType = SAVE;
-    	dataAccessSS.saveWithinTransaction(this);  	
+    	return dataAccessSS.saveWithinTransaction(this);  	
     }
      
+    public void deleteCatalog(Catalog catalog) throws DatabaseException {
+    	this.catalogName = catalog.getName();
+    	queryType = DELETE_CATALOG;
+    	dataAccessSS.deleteWithinTransaction(this);
+    }
+    
 	public void buildQuery() throws DatabaseException {
 		if(queryType.equals(SAVE)) {
 			buildSaveQuery();
-		}		
+		} else if (queryType.equals(DELETE_CATALOG)) {
+			buildDeleteCatalogQuery();
+		}
 	}
 	
 	void buildSaveQuery() throws DatabaseException {
@@ -39,6 +49,10 @@ public class DbClassCatalog implements DbClass {
 		"(catalogid,catalogname) " +
 		"VALUES(NULL,'"+
 				  catalogName+"')"; 
+	}
+	
+	void buildDeleteCatalogQuery() {
+		query = "DELETE FROM CatalogType WHERE catalogname = '" + this.catalogName + "'";
 	}
 
 	public String getDbUrl() {

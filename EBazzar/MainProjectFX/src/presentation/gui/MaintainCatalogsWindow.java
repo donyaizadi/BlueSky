@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import business.exceptions.BackendException;
 import presentation.control.ManageProductsUIControl;
 import presentation.data.CatalogPres;
 import presentation.data.ManageProductsData;
@@ -86,7 +87,11 @@ public class MaintainCatalogsWindow extends Stage implements MessageableWindow {
 	}
 	
 	public void addItem(CatalogPres item) {
-		ManageProductsData.INSTANCE.addToCatalogList(item);
+		try {
+			ManageProductsData.INSTANCE.addToCatalogList(item);
+		} catch (BackendException e) {
+			e.printStackTrace();
+		}
 		setData(ManageProductsData.INSTANCE.getCatalogList());
 		TableUtil.refreshTable(table, ManageProductsData.INSTANCE.getManageCatalogsSynchronizer());
 	}
@@ -152,13 +157,18 @@ public class MaintainCatalogsWindow extends Stage implements MessageableWindow {
 		    } else if (selectedIndices == null || selectedIndices.isEmpty()) {
 		    	messageBar.setText("Please select a row.");
 		    } else {
-		    	boolean result =  ManageProductsData.INSTANCE.removeFromCatalogList(selectedItems);
-			    if(result) {
-			    	table.setItems(ManageProductsData.INSTANCE.getCatalogList());
-			    	clearMessages();
-			    } else {
-			    	displayInfo("No items deleted.");
-			    }
+		    	boolean result;
+				try {
+					result = ManageProductsData.INSTANCE.removeFromCatalogList(selectedItems);
+					if(result) {
+				    	table.setItems(ManageProductsData.INSTANCE.getCatalogList());
+				    	clearMessages();
+				    } else {
+				    	displayInfo("No items deleted.");
+				    }
+				} catch (Exception e) {
+					e.printStackTrace();
+				}   
 		    }
 		});
 		backButton.setOnAction(ManageProductsUIControl.INSTANCE.getBackButtonHandler());

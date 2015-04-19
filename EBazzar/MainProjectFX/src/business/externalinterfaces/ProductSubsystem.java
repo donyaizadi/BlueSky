@@ -30,10 +30,10 @@ public interface ProductSubsystem {
 	public Catalog getCatalogFromName(String catName) throws BackendException;
 
 //	/** saves newly created catalog */
-	public void saveNewCatalog(Catalog catalog) throws BackendException;
+	public Integer saveNewCatalog(Catalog catalog) throws BackendException;
 //
 //	/** saves a new product obtained from user input */
-	public void saveNewProduct(Product product) throws BackendException;
+	public Integer saveNewProduct(Product product) throws BackendException;
 //
 //	/** deletes a product obtained from user input */
 	public void deleteProduct(Product product) throws BackendException;

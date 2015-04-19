@@ -2,6 +2,7 @@ package business.productsubsystem;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import middleware.exceptions.DatabaseException;
 import business.exceptions.BackendException;
@@ -39,7 +40,6 @@ public class ProductSubsystemFacade implements ProductSubsystem {
 		} catch(DatabaseException e) {
 			throw new BackendException(e);
 		}
-		
 	}
     public Product getProductFromId(Integer prodId) throws BackendException {
 		try {
@@ -83,27 +83,64 @@ public class ProductSubsystemFacade implements ProductSubsystem {
 	
 	@Override
 	public Catalog getCatalogFromName(String catName) throws BackendException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			DbClassCatalogTypes dbClass = new DbClassCatalogTypes();
+			List<Catalog> catalogs = dbClass.getCatalogTypes().getCatalogs();
+			List<Catalog> resultCatalogs = catalogs.stream().filter(c -> c.getName().equals(catName)).collect(Collectors.toList());
+			if (resultCatalogs.size() > 0) {
+				return resultCatalogs.get(0);
+			} else {
+				return null;
+			}
+		} catch(DatabaseException e) {
+			throw new BackendException(e);
+		}
 	}
 	@Override
-	public void saveNewCatalog(Catalog catalog) throws BackendException {
-		// TODO Auto-generated method stub
+	
+	public Integer saveNewCatalog(Catalog catalog) throws BackendException {
+		Integer catalogId = -1;
+		DbClassCatalog dbClass = new DbClassCatalog();
+		try {
+			catalogId = dbClass.saveNewCatalog(catalog.getName());
+		} catch (DatabaseException e) {
+			e.printStackTrace();
+		}
 		
+		return catalogId;
 	}
+	
 	@Override
-	public void saveNewProduct(Product product) throws BackendException {
-		// TODO Auto-generated method stub
+	public Integer saveNewProduct(Product product) throws BackendException {
+		Integer productId = -1;
 		
+		DbClassProduct dbClass = new DbClassProduct();
+		try {
+			productId = dbClass.saveNewProduct(product, product.getCatalog());
+		} catch (DatabaseException e) {
+			e.printStackTrace();
+		}
+		
+		return productId;
 	}
+	
 	@Override
 	public void deleteProduct(Product product) throws BackendException {
-		// TODO Auto-generated method stub
-		
+		DbClassProduct dbClass = new DbClassProduct();
+		try {
+			dbClass.deleteProduct(product);
+		} catch (DatabaseException e) {
+			e.printStackTrace();
+		}
 	}
+	
 	@Override
 	public void deleteCatalog(Catalog catalog) throws BackendException {
-		// TODO Auto-generated method stub
-		
+		DbClassCatalog dbClass = new DbClassCatalog();
+		try {
+			dbClass.deleteCatalog(catalog);
+		} catch (DatabaseException e) {
+			e.printStackTrace();
+		}
 	}
 }
