@@ -65,6 +65,7 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
     }
    
     void loadDefaultShipAddress() throws BackendException {
+    	//implemented by Arun
     	DbClassAddress dbClassAddress = new DbClassAddress();
     	try {
 			dbClassAddress.readDefaultShipAddress(customerProfile);
@@ -74,6 +75,7 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
         defaultShipAddress = dbClassAddress.getDefaultShipAddress();
     }
 	void loadDefaultBillAddress() throws BackendException {
+		//implemented by Arun
 		    DbClassAddress dbClassAddress = new DbClassAddress();
 		    try {
 				dbClassAddress.readDefaultBillAddress(customerProfile);
@@ -84,14 +86,21 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	}
 	void loadDefaultPaymentInfo() throws BackendException {
 		//implement 
-		//looking for DBClassCreditCard
+		//looking for DBClasCreditCard
+		DbClassCreditCard dbClassCreditCard = new DbClassCreditCard();
+	    try {
+	    	dbClassCreditCard.readDefaultPaymentInfo(customerProfile);
+		} catch (DatabaseException e) {
+			e.printStackTrace();
+		}
+        defaultPaymentInfo = dbClassCreditCard.getDefaultPaymentInfo();
 
 	}
 	void loadOrderData() throws BackendException {
 		// retrieve the order history for the customer and store here
 		orderSubsystem = new OrderSubsystemFacade(customerProfile);
-		//orderHistory = orderSubsystem.getOrderHistory();
-		//LOGGER.info("total count of order history =  " + orderHistory.size());
+		orderHistory = orderSubsystem.getOrderHistory();
+		LOGGER.info("total count of order history =  " + orderHistory.size());
 		
 	
 	}
@@ -188,28 +197,28 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	
 	@Override
 	public List<Order> getOrderHistory() {
-		// TODO Auto-generated method stub
+		// TODO done by Arun
 		//return unmodifiable list
 		return Collections.unmodifiableList(orderHistory);
 	}
 
 	@Override
 	public void setShippingAddressInCart(Address addr) {
-		// TODO Auto-generated method stub
+		// TODO done by Arun
 		shoppingCartSubsystem.setShippingAddress(addr);
 		
 	}
 
 	@Override
 	public void setBillingAddressInCart(Address addr) {
-		// TODO Auto-generated method stub
+		// TODO done by Arun
 		shoppingCartSubsystem.setBillingAddress(addr);
 		
 	}
 
 	@Override
 	public void setPaymentInfoInCart(CreditCard cc) {
-		// TODO Auto-generated method stub
+		// TODO done by Arun
 		shoppingCartSubsystem.setPaymentInfo(cc);
 
 		
@@ -282,5 +291,20 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	public CustomerProfile getGenericCustomerProfile() {
 		// TODO Auto-generated method stub
 		return new CustomerProfileImpl(1, "Test_1", "Test_2");
+	}
+	
+	public void setCustomerProfile(CustomerProfile profile) {
+		this.customerProfile = (CustomerProfileImpl) profile;
+	}
+	
+	@Override
+	public void loadDefaultCustomerData() {
+		try {
+			loadDefaultBillAddress();
+			loadDefaultShipAddress();
+			loadDefaultPaymentInfo();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
