@@ -90,7 +90,6 @@ public enum ShoppingCartSubsystemFacade implements ShoppingCartSubsystem {
 	public void clearLiveCart() {
 		// TODO Auto-generated method stub
 		liveCart = new ShoppingCartImpl(new LinkedList<CartItem>());
-		
 	}
 
 	@Override

@@ -101,8 +101,6 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 		orderSubsystem = new OrderSubsystemFacade(customerProfile);
 		orderHistory = orderSubsystem.getOrderHistory();
 		LOGGER.info("total count of order history =  " + orderHistory.size());
-		
-	
 	}
     /**
      * Returns true if user has admin access

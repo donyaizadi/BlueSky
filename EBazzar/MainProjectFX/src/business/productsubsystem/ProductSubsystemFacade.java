@@ -30,6 +30,7 @@ public class ProductSubsystemFacade implements ProductSubsystem {
 			throw new BackendException(e);
 		}	
     }
+    
     public Integer getProductIdFromName(String prodName) throws BackendException {
 		try {
 			DbClassProduct dbclass = new DbClassProduct();

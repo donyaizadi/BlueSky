@@ -1,6 +1,10 @@
 package presentation.control;
 
+import business.exceptions.UnauthorizedException;
+import business.usecasecontrol.BrowseAndSelectController;
+import presentation.data.BrowseSelectData;
 import presentation.data.CatalogPres;
+import presentation.data.DataUtil;
 import presentation.data.ManageProductsData;
 import presentation.data.ProductPres;
 import presentation.gui.MaintainCatalogsWindow;
@@ -11,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
@@ -30,15 +35,38 @@ public enum ManageProductsUIControl {
 	MaintainProductsWindow maintainProductsWindow;
 
 	// Manage catalogs
-	private class MaintainCatalogsHandler implements EventHandler<ActionEvent> {
+	private class MaintainCatalogsHandler implements EventHandler<ActionEvent>, Callback {
 		@Override
 		public void handle(ActionEvent e) {
 			maintainCatalogsWindow = new MaintainCatalogsWindow(primaryStage);
+			
+			boolean isLoggedIn = DataUtil.isLoggedIn();
+			if (!isLoggedIn) {
+				LoginUIControl loginControl = new LoginUIControl(maintainCatalogsWindow, primaryStage, this);
+				loginControl.startLogin();
+			} else {
+				doUpdate();
+			}
+		}
+
+		@Override
+		public Text getMessageBar() {
+			return startScreenCallback.getMessageBar();
+		}
+
+		@Override
+		public void doUpdate() {
+			try {
+	    		Authorization.checkAuthorization(maintainCatalogsWindow, DataUtil.custIsAdmin());
+	    	} catch(UnauthorizedException e) {   
+	        	displayError(e.getMessage());
+	        	return;
+	        }
+			
 			ObservableList<CatalogPres> list = ManageProductsData.INSTANCE.getCatalogList();
 			maintainCatalogsWindow.setData(list);
 			maintainCatalogsWindow.show();
 			primaryStage.hide();
-
 		}
 	}
 	
@@ -46,17 +74,37 @@ public enum ManageProductsUIControl {
 		return new MaintainCatalogsHandler();
 	}
 	
-	private class MaintainProductsHandler implements EventHandler<ActionEvent> {
-		@Override
-		public void handle(ActionEvent e) {
-			maintainProductsWindow = new MaintainProductsWindow(primaryStage);
+	private class MaintainProductsHandler implements EventHandler<ActionEvent>, Callback {
+		public void doUpdate() {
+			try {
+	    		Authorization.checkAuthorization(maintainProductsWindow, DataUtil.custIsAdmin());
+	    	} catch(UnauthorizedException e) {   
+	        	displayError(e.getMessage());
+	        	return;
+	        }			
 			CatalogPres selectedCatalog = ManageProductsData.INSTANCE.getSelectedCatalog();
 			if(selectedCatalog != null) {
 				ObservableList<ProductPres> list = ManageProductsData.INSTANCE.getProductsList(selectedCatalog);
 				maintainProductsWindow.setData(ManageProductsData.INSTANCE.getCatalogList(), list);
 			}
-			maintainProductsWindow.show();  
-	        primaryStage.hide();
+			primaryStage.hide();
+			maintainProductsWindow.show();
+		}
+		public Text getMessageBar() {
+			return startScreenCallback.getMessageBar();
+		}
+		
+		@Override
+		public void handle(ActionEvent e) {
+			maintainProductsWindow = new MaintainProductsWindow(primaryStage);
+			
+			boolean isLoggedIn = DataUtil.isLoggedIn();
+			if (!isLoggedIn) {
+				LoginUIControl loginControl = new LoginUIControl(maintainProductsWindow, primaryStage, this);
+				loginControl.startLogin();
+			} else {
+				doUpdate();
+			}
 		}
 	}
 	public MaintainProductsHandler getMaintainProductsHandler() {
