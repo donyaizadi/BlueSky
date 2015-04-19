@@ -133,9 +133,27 @@ public class DbQueries {
 		
 	}
 	
-	public List<ShoppingCart> retrieveShoppingCart(){
-		//ShoppingCartSubsystemFacade.
-		return null;
+	public static int readIdShoppingCart(){
+		String query = readSavedShoppingCartSql();
+		int id = 0;
+		try {
+			stmt = acctCon.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			
+			    
+                if(rs.next()) {
+                 id = rs.getInt("shopcartid");   
+                }  
+                stmt.close();
+                
+                    
+	            
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			
+		}
+		return id;
 	}
 	
 	
@@ -225,6 +243,9 @@ public class DbQueries {
 	///queries
 	public static String readAddressesSql() {
 		return "SELECT * from altaddress WHERE custid = 1";
+	}
+	public static String readSavedShoppingCartSql(){
+		return "SELECT * from shopcarttbl WHERE custid= 1";
 	}
 	public static String[] saveCatalogSql() {
 		String[] vals = new String[3];
