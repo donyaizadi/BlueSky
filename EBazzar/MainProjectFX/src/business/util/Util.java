@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,9 +17,11 @@ import presentation.data.OrderPres;
 import presentation.data.ProductPres;
 import business.CartItemData;
 import business.externalinterfaces.*;
+import business.ordersubsystem.OrderSubsystemFacade;
 import business.shoppingcartsubsystem.ShoppingCartSubsystemFacade;
 
 public class Util {
+	public static final String DATE_PATTERN = "MM/dd/yyyy";
 	private final static String REL_RULES_PATH = "business/rulefiles";
 	public static BufferedReader pathToRules(ClassLoader classLoader, String filename) throws IOException {
 	    URL url = classLoader.getResource(REL_RULES_PATH + "/" + filename);
@@ -60,6 +64,23 @@ public class Util {
 				.collect(Collectors.toList());
 		
 	}
+
+	public static List<OrderItem> cartItemsToOrderItems(List<CartItem> CartItems, Integer orderId){
+		if(CartItems == null) return null;
+		List<OrderItem> orderItems = new ArrayList<OrderItem>();
+		for(CartItem item: CartItems){
+			orderItems.add(OrderSubsystemFacade.createOrderItem(item.getProductid(), item.getProductName(), orderId, item.getQuantity(), item.getTotalprice()));
+		}
+		return orderItems;
+	}
+
+	public static LocalDate localDateForString(String date) {  //pattern: "MM/dd/yyyy"
+		return LocalDate.parse(date, DateTimeFormatter.ofPattern(DATE_PATTERN));
+	}
+	
+	public static String localDateAsString(LocalDate date) {  //pattern: "MM/dd/yyyy"
+		return date.format(DateTimeFormatter.ofPattern(DATE_PATTERN));
+	}
 	
 	public static List<OrderPres> orderListToOrderPresList(List<Order> list) {
 		if(list == null) return null;
@@ -67,9 +88,6 @@ public class Util {
 		                         op.setOrder(ord); return op;})
 					  .collect(Collectors.toList());
 				
-			}
-	
-	
-	
-	// convert return orderitem cartitems to orderitems (cartitems, orderid)
+	}
+		
 }

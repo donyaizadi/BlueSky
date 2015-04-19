@@ -23,9 +23,7 @@ class DbAction {
     }
     void performRead() throws DatabaseException {
         concreteDbClass.buildQuery();
-        ResultSet resultSet = DataAccessUtil.runQuery(pool, con, 
-                                            concreteDbClass.getQuery());
-        
+        ResultSet resultSet = DataAccessUtil.runQuery(pool, con, concreteDbClass.getQuery());
         concreteDbClass.populateEntity(resultSet);
     }
     

@@ -1,6 +1,8 @@
 
 package business.ordersubsystem;
 
+import static business.util.StringParse.makeString;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -14,12 +16,19 @@ import middleware.exceptions.DatabaseException;
 import middleware.externalinterfaces.DataAccessSubsystem;
 import middleware.externalinterfaces.DbClass;
 import middleware.externalinterfaces.DbConfigKey;
+import business.exceptions.BackendException;
 import business.externalinterfaces.Address;
+//import business.externalinterfaces.CartItem;
 import business.externalinterfaces.CreditCard;
 import business.externalinterfaces.CustomerProfile;
 import business.externalinterfaces.Order;
 import business.externalinterfaces.OrderItem;
+import business.externalinterfaces.Product;
+import business.externalinterfaces.ProductSubsystem;
 import business.externalinterfaces.ShoppingCart;
+import business.productsubsystem.ProductSubsystemFacade;
+import business.shoppingcartsubsystem.CartItemImpl;
+import business.util.Util;
 
 
 
@@ -78,7 +87,26 @@ class DbClassOrder implements DbClass {
     
     // Precondition: CustomerProfile has been set by the constructor
     void submitOrder(ShoppingCart shopCart) throws DatabaseException {
-    	//implement
+    	dataAccessSS.createConnection(this);
+	    dataAccessSS.startTransaction();
+	    try {   
+	    	//First, get order id
+	    	Integer orderId = submitOrderData();
+	    	
+			//Second, create order items, and 
+			List<OrderItem> items = Util.cartItemsToOrderItems(shopCart.getCartItems(), orderId);
+			for(OrderItem item:items){
+				submitOrderItem(item);
+			}
+		    dataAccessSS.commit();
+		    
+	    } catch(DatabaseException e) {
+        	dataAccessSS.rollback();
+        	LOG.warning("Rolling back...");
+        	throw (e);
+        }  finally {
+        	dataAccessSS.releaseConnection();
+        }	
     }
 	    
     
@@ -103,6 +131,7 @@ class DbClassOrder implements DbClass {
     	dataAccessSS.atomicRead(this);
         return Collections.unmodifiableList(orderItems);        
     }
+    
     
     public void buildQuery() {
         if(queryType.equals(GET_ORDER_ITEMS)) {
@@ -147,8 +176,9 @@ class DbClassOrder implements DbClass {
     }
 	
     private void buildSaveOrderItemQuery(){
-    	//implement
-        query = "";
+    	query = "INSERT INTO orderitem (orderitemid, orderid, productid, quantity, totalprice, shipmentcost, taxamount) " +
+        		"VALUES (NULL, " + orderItem.getOrderId() + ", " + orderItem.getProductId() + ", '" + orderItem.getQuantity() + "', '" + 
+        		orderItem.getTotalPrice() + "', '0','0')";
     }
 
     private void buildGetOrderDataQuery() {
@@ -164,7 +194,22 @@ class DbClassOrder implements DbClass {
     }
     
     private void populateOrderItems(ResultSet rs) throws DatabaseException {
-       //implement
+    	orderItems = new LinkedList<OrderItem>();
+    	try {
+			while(rs.next()){
+				//Get Product Info From ProductSubsystem
+				ProductSubsystem pss = new ProductSubsystemFacade();
+				try {
+					Product product = pss.getProductFromId(rs.getInt("productid"));
+					OrderItem item= new OrderItemImpl(product.getProductName(), rs.getInt("quantity"), product.getUnitPrice());
+					orderItems.add(item);
+				} catch (BackendException e) {
+					throw new DatabaseException(e);
+				}
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
     }
     
     private void populateOrderIds(ResultSet resultSet) throws DatabaseException {
@@ -179,8 +224,17 @@ class DbClassOrder implements DbClass {
         }
     }
     
-    private void populateOrderData(ResultSet resultSet) throws DatabaseException {  	
-        //implement
+    private void populateOrderData(ResultSet resultSet) throws DatabaseException {
+    	orderData = new OrderImpl();
+        try {
+            if(resultSet.next()){
+            	orderData.setDate(Util.localDateForString(resultSet.getString("orderdate")));            
+            }
+        }
+        catch(SQLException e){
+        	throw new DatabaseException(e);
+        }     	
+    	
     }    
  
     public void populateEntity(ResultSet resultSet) throws DatabaseException {

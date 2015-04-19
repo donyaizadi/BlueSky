@@ -18,7 +18,7 @@ import business.externalinterfaces.CustomerProfile;
 import business.externalinterfaces.DbClassAddressForTest;
 
 class DbClassAddress implements DbClass, DbClassAddressForTest {
-	private static final Logger LOG = Logger.getLogger(DbClassAddress.class.getPackage().getName());
+	private static final Logger LOG = Logger.getLogger(DbClassAddress.class.getName());
 	private DataAccessSubsystem dataAccessSS = new DataAccessSubsystemFacade();
     private CustomerProfile custProfile;
     private Address address;
