@@ -21,6 +21,7 @@ import business.externalinterfaces.Catalog;
 import business.externalinterfaces.Product;
 import business.externalinterfaces.ProductFromGui;
 import business.util.TwoKeyHashMap;
+import business.util.Util;
 
 class DbClassProduct implements DbClass {
 	@SuppressWarnings("unused")
@@ -46,6 +47,7 @@ class DbClassProduct implements DbClass {
 	private final String READ_PRODUCT = "ReadProduct";
 	private final String READ_PROD_LIST = "ReadProdList";
 	private final String SAVE_NEW_PROD = "SaveNewProd";
+	private final String DELETE_PRODUCT = "DeleteProduct";
 
 	public void buildQuery() {
 		if (queryType.equals(LOAD_PROD_TABLE)) {
@@ -56,6 +58,8 @@ class DbClassProduct implements DbClass {
 			buildProdListQuery();
 		} else if (queryType.equals(SAVE_NEW_PROD)) {
 			buildSaveNewQuery();
+		} else if (queryType.equals(DELETE_PRODUCT)) {
+			buildDeleteProductQuery();
 		}
 	}
 
@@ -72,7 +76,13 @@ class DbClassProduct implements DbClass {
 	}
 
 	private void buildSaveNewQuery() {
-		//implement
+		System.out.println("CATALOG ID:******* " + catalog.getId());
+		query = "INSERT INTO Product (productid, catalogid, productname, totalquantity, priceperunit, mfgdate, description) " +
+				"VALUES (NULL, " + catalog.getId() + ", '" + product.getProductName() + "', " + product.getQuantityAvail() + ", " + product.getUnitPrice() + ", '" + Util.localDateAsString(product.getMfgDate()) + "', '" + product.getDescription() + "')";
+	}
+	
+	private void buildDeleteProductQuery() {
+		query = "DELETE FROM Product WHERE productid = " + productId;
 	}
 
 	public TwoKeyHashMap<Integer, String, Product> readProductTable()
@@ -127,11 +137,19 @@ class DbClassProduct implements DbClass {
 	 * Database columns: productid, productname, totalquantity, priceperunit,
 	 * mfgdate, catalogid, description
 	 */
-	public void saveNewProduct(ProductFromGui product, Integer catalogid,
-			String description) throws DatabaseException {
-		//implement
+	public Integer saveNewProduct(Product product, Catalog catalog) throws DatabaseException {
+		this.product = product;
+		this.catalog = catalog;
+		queryType = SAVE_NEW_PROD;
+		return dataAccessSS.saveWithinTransaction(this);
 	}
 
+	public void deleteProduct(Product product) throws DatabaseException {
+		this.productId = product.getProductId();
+		queryType = DELETE_PRODUCT;
+		dataAccessSS.deleteWithinTransaction(this);
+	}
+	
 	public void populateEntity(ResultSet resultSet) throws DatabaseException {
 		if (queryType.equals(LOAD_PROD_TABLE)) {
 			populateProdTable(resultSet);

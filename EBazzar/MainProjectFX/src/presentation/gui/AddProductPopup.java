@@ -124,7 +124,7 @@ public class AddProductPopup extends Popup {
 				} //Catalog c, Integer pi, String pn, int qa, double up, LocalDate md, String d
 				Product newProd = ProductSubsystemFacade.createProduct(DefaultData.CATALOG_MAP.get(catalogName.getText()), 
 						Integer.parseInt(id.getText()), name.getText(), Integer.parseInt(numAvail.getText()), 
-						    Double.parseDouble(unitPrice.getText()), LocalDate.parse(manufactureDate.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")), 
+						    Double.parseDouble(unitPrice.getText()), GuiUtils.localDateForString(manufactureDate.getText()), 
 						      description.getText());
 				ProductPres prodPres = new ProductPres();
 				prodPres.setProduct(newProd);

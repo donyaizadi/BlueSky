@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import middleware.exceptions.DatabaseException;
 import presentation.gui.GuiUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -78,6 +79,15 @@ public enum ManageProductsData {
 	}
 	
 	public void addToProdList(CatalogPres catPres, ProductPres prodPres) {
+		ProductSubsystemFacade productSubsystemFacade = new ProductSubsystemFacade();
+		prodPres.getProduct().setCatalog(catPres.getCatalog());
+		try {
+			Integer productId = productSubsystemFacade.saveNewProduct(prodPres.getProduct());
+			prodPres.getProduct().setProductId(productId);
+		} catch (BackendException e) {
+			e.printStackTrace();
+		}
+		
 		ObservableList<ProductPres> newProducts =
 		           FXCollections.observableArrayList(prodPres);
 		List<ProductPres> specifiedProds = productsMap.get(catPres);
@@ -92,7 +102,14 @@ public enum ManageProductsData {
 	 */
 	public boolean removeFromProductList(CatalogPres cat, ObservableList<ProductPres> toBeRemoved) {
 		if(toBeRemoved != null && !toBeRemoved.isEmpty()) {
+			ProductSubsystemFacade productSubsystemFacade = new ProductSubsystemFacade();
+			try {
+				productSubsystemFacade.deleteProduct(toBeRemoved.get(0).getProduct());
+			} catch (BackendException e) {
+				e.printStackTrace();
+			}
 			boolean result = productsMap.get(cat).remove(toBeRemoved.get(0));
+			
 			return result;
 		}
 		return false;
@@ -127,7 +144,7 @@ public enum ManageProductsData {
 		return catPres;
 	}
 
-	public void addToCatalogList(CatalogPres catPres) {
+	public void addToCatalogList(CatalogPres catPres) throws BackendException {
 		ObservableList<CatalogPres> newCatalogs = FXCollections
 				.observableArrayList(catPres);
 
@@ -135,6 +152,10 @@ public enum ManageProductsData {
 		// catalogList is guaranteed to be non-null
 		boolean result = catalogList.addAll(newCatalogs);
 		if(result) { //must make this catalog accessible in productsMap
+			ProductSubsystemFacade productSubsystemFacade = new ProductSubsystemFacade();
+			Integer catalogId = productSubsystemFacade.saveNewCatalog(catPres.getCatalog());
+			catPres.getCatalog().setId(catalogId);
+			
 			productsMap.put(catPres, FXCollections.observableList(new ArrayList<ProductPres>()));
 		}
 	}
@@ -150,11 +171,13 @@ public enum ManageProductsData {
 	 * Also: If the removed catalog was being stored as the selectedCatalog,
 	 * the next item in the catalog list is set as "selected"
 	 */
-	public boolean removeFromCatalogList(ObservableList<CatalogPres> toBeRemoved) {
+	public boolean removeFromCatalogList(ObservableList<CatalogPres> toBeRemoved) throws BackendException {
 		boolean result = false;
 		CatalogPres item = toBeRemoved.get(0);
 		if (toBeRemoved != null && !toBeRemoved.isEmpty()) {
 			result = catalogList.remove(item);
+			ProductSubsystemFacade productSubsystemFacade = new ProductSubsystemFacade();
+			productSubsystemFacade.deleteCatalog(item.getCatalog());
 		}
 		if(item.equals(selectedCatalog)) {
 			if(!catalogList.isEmpty()) {

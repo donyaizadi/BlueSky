@@ -43,6 +43,10 @@ public class ProductImpl implements Product {
         return catalog;
     }
     
+    public void setCatalog(Catalog catalog) {
+    	this.catalog = catalog;
+    }
+    
     public LocalDate getMfgDate() {    	
     	return mfgDate;
     }
