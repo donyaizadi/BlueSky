@@ -258,13 +258,42 @@ public enum BrowseSelectUIControl {
 	public CartContinueHandler getCartContinueHandler() {
 		return new CartContinueHandler();
 	}
-	private class SaveCartHandler implements EventHandler<ActionEvent> {
+	
+	private class SaveCartHandler implements EventHandler<ActionEvent>, Callback {
+		public void doUpdate() {
+			try {
+	    		Authorization.checkAuthorization(shoppingCartWindow, DataUtil.custIsAdmin());
+	    	} catch(UnauthorizedException e) {   
+	        	displayError(e.getMessage());
+	        	return;
+	        }			
+			try {
+				BrowseAndSelectController.INSTANCE.saveCart();
+			} catch (BackendException e) {
+				shoppingCartWindow.displayError("Database is unavailable. Please try again later.");
+			}
+
+			shoppingCartWindow.show();
+			shoppingCartWindow.displayInfo("You saved your Shopping Cart successfully!");
+		}
 		
+		public Text getMessageBar() {
+			return startScreenCallback.getMessageBar();
+		}
 		@Override
 		public void handle(ActionEvent evt) {
-			shoppingCartWindow.displayInfo("You need to implement this handler.");	
-		}	
+			shoppingCartWindow = ShoppingCartWindow.INSTANCE;
+			boolean isLoggedIn = DataUtil.isLoggedIn();
+			if (!isLoggedIn) {
+				LoginUIControl loginControl = new LoginUIControl(shoppingCartWindow, shoppingCartWindow, this);
+				loginControl.startLogin();
+			} else {
+				doUpdate();
+			}
+		}
 	}
+	
+
 	public SaveCartHandler getSaveCartHandler() {
 		return new SaveCartHandler();
 	}
