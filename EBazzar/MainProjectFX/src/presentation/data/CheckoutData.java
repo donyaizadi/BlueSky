@@ -2,6 +2,7 @@ package presentation.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import business.BusinessConstants;
@@ -15,11 +16,13 @@ import business.usecasecontrol.BrowseAndSelectController;
 import business.usecasecontrol.CheckoutController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import presentation.control.CheckoutUIControl;
 import presentation.gui.GuiConstants;
 
 public enum CheckoutData {
 	INSTANCE;
-	
+	private static final Logger LOG = Logger.getLogger(CheckoutData.class
+			.getPackage().getName());
 	public Address createAddress(String street, String city, String state,
 			String zip, boolean isShip, boolean isBill) {
 		return CustomerSubsystemFacade.createAddress(street, city, state, zip, isShip, isBill);
@@ -49,12 +52,12 @@ public enum CheckoutData {
 	}
 	private ObservableList<CustomerPres> loadShipAddresses() {	
 		//load Fake data
-	    List<CustomerPres> list = DefaultData.CUSTS_ON_FILE
-						   .stream()
-						   .filter(cust -> cust.getAddress().isShippingAddress())
-						   .collect(Collectors.toList());
+//	    List<CustomerPres> list = DefaultData.CUSTS_ON_FILE
+//						   .stream()
+//						   .filter(cust -> cust.getAddress().isShippingAddress())
+//						   .collect(Collectors.toList());
 		//load Data from DB
-//		List<CustomerPres> list = getShipAddresses();
+		List<CustomerPres> list = getShipAddresses();
 		return FXCollections.observableList(list);				   
 										   
 	}
@@ -71,19 +74,24 @@ public enum CheckoutData {
 	}
 	private ObservableList<CustomerPres> loadBillAddresses() {
 		//load Fake data
-		List list = DefaultData.CUSTS_ON_FILE
-				   .stream()
-				   .filter(cust -> cust.getAddress().isBillingAddress())
-				   .collect(Collectors.toList());
+//		List list = DefaultData.CUSTS_ON_FILE
+//				   .stream()
+//				   .filter(cust -> cust.getAddress().isBillingAddress())
+//				   .collect(Collectors.toList());
 		
 		//load Data from DB
-//		List list = getBillAddresses();
+		List<CustomerPres> list = getBillAddresses();
+		for(CustomerPres singleCustomer: list){
+			
+		}
 		return FXCollections.observableList(list);
 	}
 	public ObservableList<CustomerPres> getCustomerShipAddresses() {
+		shipAddresses = loadShipAddresses();
 		return shipAddresses;
 	}
 	public ObservableList<CustomerPres> getCustomerBillAddresses() {
+		billAddresses = loadBillAddresses();
 		return billAddresses;
 	}
 	public List<String> getDisplayAddressFields() {

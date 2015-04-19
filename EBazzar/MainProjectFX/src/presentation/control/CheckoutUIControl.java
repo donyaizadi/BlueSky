@@ -56,7 +56,7 @@ public enum CheckoutUIControl {
 			CustomerProfile custProfile = data.getCustomerProfile();
 			Address defaultShipAddress = data.getDefaultShippingData();
 			Address defaultBillAddress = data.getDefaultBillingData();
-
+			
 			shippingBillingWindow.setShippingAddress(custProfile.getFirstName()
 					+ " " + custProfile.getLastName(),
 					defaultShipAddress.getStreet(),
@@ -266,7 +266,9 @@ public enum CheckoutUIControl {
 				CheckoutController.INSTANCE.runPaymentRules(
 						shippingBillingWindow.getBillingAddress(),
 						paymentWindow.getCreditCardFromWindow());
+				CheckoutController.INSTANCE.setPaymentToLivingCart(paymentWindow.getCreditCardFromWindow());
 				// CheckoutController.INSTANCE.verifyCreditCard();
+				
 				paymentWindow.clearMessages();
 				paymentWindow.hide();
 				termsWindow = new TermsWindow();
