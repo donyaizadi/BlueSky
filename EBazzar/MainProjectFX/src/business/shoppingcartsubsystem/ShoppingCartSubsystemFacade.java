@@ -144,5 +144,11 @@ public enum ShoppingCartSubsystemFacade implements ShoppingCartSubsystem {
 		Rules transferObject = new RulesFinalOrder(liveCart);
 		transferObject.runRules();
 	}
+	
+	public static ShoppingCart createTestShoppingCart(){
+		ShoppingCartImpl shoppingCart = new ShoppingCartImpl(new ArrayList<CartItem>());
+		shoppingCart.setCartId("1");
+		return shoppingCart;
+	}
 
 }
