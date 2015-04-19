@@ -51,6 +51,7 @@ public enum CheckoutUIControl {
 	private class ProceedFromCartToShipBill implements
 			EventHandler<ActionEvent>, Callback {
 		CheckoutData data = CheckoutData.INSTANCE;
+
 		public void doUpdate() {
 			CustomerProfile custProfile = data.getCustomerProfile();
 			Address defaultShipAddress = data.getDefaultShippingData();
@@ -68,45 +69,45 @@ public enum CheckoutUIControl {
 					defaultBillAddress.getState(), defaultBillAddress.getZip());
 			shippingBillingWindow.show();
 		}
+
 		@Override
 		public void handle(ActionEvent evt) {
 			ShoppingCartWindow.INSTANCE.clearMessages();
 			ShoppingCartWindow.INSTANCE.setTableAccessByRow();
 			ShoppingCartWindow.INSTANCE.hide();
-			
+
 			boolean rulesOk = true;
-			/* check that cart is not empty before going to next screen */	
-			
-//			try {
-//				usecaseControl.runShoppingCartRules();
-//			} catch (RuleException e) {
-//				//handle
-//			} catch (BusinessException e) {
-//				//handle
-//			}
-	
+			/* check that cart is not empty before going to next screen */
+
+			// try {
+			// usecaseControl.runShoppingCartRules();
+			// } catch (RuleException e) {
+			// //handle
+			// } catch (BusinessException e) {
+			// //handle
+			// }
+
 			if (rulesOk) {
 				boolean isLoggedIn = DataUtil.isLoggedIn();
 				shippingBillingWindow = new ShippingBillingWindow();
 				if (!isLoggedIn) {
-					LoginUIControl loginControl 
-					  = new LoginUIControl(shippingBillingWindow, ShoppingCartWindow.INSTANCE, this);
+					LoginUIControl loginControl = new LoginUIControl(
+							shippingBillingWindow, ShoppingCartWindow.INSTANCE,
+							this);
 					loginControl.startLogin();
 				} else {
 					doUpdate();
-				}			
+				}
 			}
 
 		}
+
 		@Override
 		public Text getMessageBar() {
 			return ShoppingCartWindow.INSTANCE.getMessageBar();
 		}
 	}
-	
-	
 
-	
 	public ProceedFromCartToShipBill getProceedFromCartToShipBill() {
 		return new ProceedFromCartToShipBill();
 	}
@@ -135,8 +136,9 @@ public enum CheckoutUIControl {
 			Address cleansedBillAddress = null;
 			if (shippingBillingWindow.getSaveShipAddr()) {
 				try {
-					cleansedShipAddress = CheckoutController.INSTANCE.runAddressRules(shippingBillingWindow
-							.getShippingAddress());
+					cleansedShipAddress = CheckoutController.INSTANCE
+							.runAddressRules(shippingBillingWindow
+									.getShippingAddress());
 				} catch (RuleException e) {
 					rulesOk = false;
 					shippingBillingWindow
@@ -144,15 +146,17 @@ public enum CheckoutUIControl {
 									+ e.getMessage());
 				} catch (BusinessException e) {
 					rulesOk = false;
-					shippingBillingWindow.displayError(
-							ErrorMessages.GENERAL_ERR_MSG + ": Message: " + e.getMessage());
+					shippingBillingWindow
+							.displayError(ErrorMessages.GENERAL_ERR_MSG
+									+ ": Message: " + e.getMessage());
 				}
 			}
 			if (rulesOk) {
 				if (shippingBillingWindow.getSaveBillAddr()) {
 					try {
-						cleansedBillAddress = CheckoutController.INSTANCE.runAddressRules(shippingBillingWindow
-								.getBillingAddress());
+						cleansedBillAddress = CheckoutController.INSTANCE
+								.runAddressRules(shippingBillingWindow
+										.getBillingAddress());
 					} catch (RuleException e) {
 						rulesOk = false;
 						shippingBillingWindow
@@ -160,37 +164,44 @@ public enum CheckoutUIControl {
 										+ e.getMessage());
 					} catch (BusinessException e) {
 						rulesOk = false;
-						shippingBillingWindow.displayError(
-								ErrorMessages.GENERAL_ERR_MSG + ": Message: " + e.getMessage());
+						shippingBillingWindow
+								.displayError(ErrorMessages.GENERAL_ERR_MSG
+										+ ": Message: " + e.getMessage());
 					}
 				}
 			}
 			if (rulesOk) {
-				
+
 				LOG.info("Address Rules passed!");
 				if (cleansedShipAddress != null) {
 					try {
-						CheckoutController.INSTANCE.saveNewAddress(cleansedShipAddress);
-					} catch(BackendException e) {
-						shippingBillingWindow.displayError("New shipping address not saved. Message: " 
-							+ e.getMessage());
+						CheckoutController.INSTANCE
+								.saveNewAddress(cleansedShipAddress);
+					} catch (BackendException e) {
+						shippingBillingWindow
+								.displayError("New shipping address not saved. Message: "
+										+ e.getMessage());
 					}
 				}
-				if (cleansedBillAddress != null) {		
+				if (cleansedBillAddress != null) {
 					try {
-						CheckoutController.INSTANCE.saveNewAddress(cleansedBillAddress);
-					} catch(BackendException e) {
-						shippingBillingWindow.displayError("New billing address not saved. Message: " 
-							+ e.getMessage());
+						CheckoutController.INSTANCE
+								.saveNewAddress(cleansedBillAddress);
+					} catch (BackendException e) {
+						shippingBillingWindow
+								.displayError("New billing address not saved. Message: "
+										+ e.getMessage());
 					}
 				}
+				CheckoutController.INSTANCE.setBillingAndShippingToLivingCart(
+						shippingBillingWindow.getBillingAddress(),
+						shippingBillingWindow.getShippingAddress());
 				paymentWindow = new PaymentWindow();
 				paymentWindow.show();
 				shippingBillingWindow.hide();
 			}
 		}
 	}
-	
 
 	public ProceedToPaymentHandler getProceedToPaymentHandler() {
 		return new ProceedToPaymentHandler();
@@ -252,16 +263,19 @@ public enum CheckoutUIControl {
 		@Override
 		public void handle(ActionEvent evt) {
 			try {
-				CheckoutController.INSTANCE.runPaymentRules(shippingBillingWindow.getBillingAddress(),
-					paymentWindow.getCreditCardFromWindow());
-				//CheckoutController.INSTANCE.verifyCreditCard();
+				CheckoutController.INSTANCE.runPaymentRules(
+						shippingBillingWindow.getBillingAddress(),
+						paymentWindow.getCreditCardFromWindow());
+				CheckoutController.INSTANCE.setPaymentToLivingCart(paymentWindow.getCreditCardFromWindow());
+				// CheckoutController.INSTANCE.verifyCreditCard();
+				
 				paymentWindow.clearMessages();
 				paymentWindow.hide();
 				termsWindow = new TermsWindow();
 				termsWindow.show();
-			} catch(RuleException e) {
+			} catch (RuleException e) {
 				paymentWindow.displayError(e.getMessage());
-			} catch(BusinessException e) {
+			} catch (BusinessException e) {
 				paymentWindow.displayError(ErrorMessages.DATABASE_ERROR);
 			}
 		}
@@ -270,7 +284,6 @@ public enum CheckoutUIControl {
 	public ProceedToTermsHandler getProceedToTermsHandler() {
 		return new ProceedToTermsHandler();
 	}
-
 
 	// handlers for TermsWindow
 

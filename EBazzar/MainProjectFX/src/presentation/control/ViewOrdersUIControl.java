@@ -3,14 +3,18 @@ package presentation.control;
 import java.util.logging.Logger;
 
 import business.customersubsystem.CustomerSubsystemFacade;
+import business.exceptions.UnauthorizedException;
+import business.usecasecontrol.BrowseAndSelectController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TableView;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import presentation.data.*;
 import presentation.gui.OrderDetailWindow;
 import presentation.gui.OrdersWindow;
+import presentation.gui.ShoppingCartWindow;
 
 public enum ViewOrdersUIControl {
 	INSTANCE;
@@ -25,16 +29,35 @@ public enum ViewOrdersUIControl {
 		startScreenCallback = returnMessage;
 	}
 	
-	private class ViewOrdersHandler implements EventHandler<ActionEvent> {
-
-		@Override
-		public void handle(ActionEvent evt) {
+	private class ViewOrdersHandler implements EventHandler<ActionEvent>, Callback {
+		public void doUpdate() {
+			try {
+	    		Authorization.checkAuthorization(ordersWindow, DataUtil.custIsAdmin());
+	    	} catch(UnauthorizedException e) {   
+	        	displayError(e.getMessage());
+	        	return;
+	        }			
 			ordersWindow = new OrdersWindow(primaryStage);
 			ordersWindow.setData(FXCollections.observableList(ViewOrdersData.INSTANCE.getOrders()));
 			ordersWindow.show();
-	        primaryStage.hide();			
-		}			
+	        primaryStage.hide();
+		}
+		public Text getMessageBar() {
+			return startScreenCallback.getMessageBar();
+		}
+		@Override
+		public void handle(ActionEvent evt) {
+			ordersWindow = new OrdersWindow(primaryStage);
+			boolean isLoggedIn = DataUtil.isLoggedIn();
+			if (!isLoggedIn) {
+				LoginUIControl loginControl = new LoginUIControl(ordersWindow, primaryStage, this);
+				loginControl.startLogin();
+			} else {
+				doUpdate();
+			}
+		}
 	}
+	
 	public ViewOrdersHandler getViewOrdersHandler() {
 		return new ViewOrdersHandler();
 	}

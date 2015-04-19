@@ -14,4 +14,8 @@ public class DBClassShoppingCartTest extends TestCase {
 	static {
 		AllTests.initializeProperties();
 	}
+	
+	public void testRetrieveSavedCart(){
+		
+	}
 }
