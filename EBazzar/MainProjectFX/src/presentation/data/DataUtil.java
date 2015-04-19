@@ -11,6 +11,7 @@ public class DataUtil {
 	public static boolean custIsAdmin() {
 		CustomerSubsystem cust = readCustFromCache();
         return (cust != null && cust.isAdmin());
+		//return true;
 	}
 	
 	public static boolean isLoggedIn() {
