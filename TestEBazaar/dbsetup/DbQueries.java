@@ -8,11 +8,12 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-
 import business.customersubsystem.CustomerSubsystemFacade;
 import business.externalinterfaces.Address;
 import business.externalinterfaces.CustomerSubsystem;
-
+import business.externalinterfaces.ShoppingCart;
+import business.rulesbeans.ShopCartBean;
+import business.shoppingcartsubsystem.ShoppingCartSubsystemFacade;
 import middleware.exceptions.DatabaseException;
 import middleware.DbConfigProperties;
 import middleware.dataaccess.DataAccessUtil;
@@ -130,6 +131,11 @@ public class DbQueries {
 		}
 		return addressList;
 		
+	}
+	
+	public List<ShoppingCart> retrieveShoppingCart(){
+		//ShoppingCartSubsystemFacade.
+		return null;
 	}
 	
 	
