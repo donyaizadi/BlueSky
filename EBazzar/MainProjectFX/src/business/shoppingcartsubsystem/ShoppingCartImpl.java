@@ -108,6 +108,11 @@ class ShoppingCartImpl implements ShoppingCart {
         }
     	return sum;
     }
+	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return cartId;
+	}
     
     
  

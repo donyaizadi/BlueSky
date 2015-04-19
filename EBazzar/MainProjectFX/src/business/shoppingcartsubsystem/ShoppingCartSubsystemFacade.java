@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import middleware.exceptions.DatabaseException;
+import middleware.externalinterfaces.DbClass;
 import business.customersubsystem.RulesPayment;
 import business.exceptions.BackendException;
 import business.exceptions.BusinessException;
@@ -14,6 +15,7 @@ import business.externalinterfaces.Address;
 import business.externalinterfaces.CartItem;
 import business.externalinterfaces.CreditCard;
 import business.externalinterfaces.CustomerProfile;
+import business.externalinterfaces.DbClassShoppingCartForTest;
 import business.externalinterfaces.Rules;
 import business.externalinterfaces.ShoppingCart;
 import business.externalinterfaces.ShoppingCartSubsystem;
@@ -44,7 +46,7 @@ public enum ShoppingCartSubsystemFacade implements ShoppingCartSubsystem {
 	public void retrieveSavedCart() throws BackendException {
 		try {
 			
-			ShoppingCartImpl cartFound = dbClass.retrieveSavedCart(customerProfile);
+			ShoppingCartImpl cartFound =(ShoppingCartImpl) dbClass.retrieveSavedCart(customerProfile);
 			if(cartFound == null) {
 				savedCart = new ShoppingCartImpl(new ArrayList<CartItem>());
 			} else {
@@ -148,6 +150,10 @@ public enum ShoppingCartSubsystemFacade implements ShoppingCartSubsystem {
 		ShoppingCartImpl shoppingCart = new ShoppingCartImpl(new ArrayList<CartItem>());
 		shoppingCart.setCartId("1");
 		return shoppingCart;
+	}
+	
+	public static DbClassShoppingCartForTest createTestCartDBClass(){
+		return new DbClassShoppingCart();
 	}
 
 }

@@ -256,7 +256,6 @@ public class ShippingBillingWindow extends Stage implements MessageableWindow {
     
     
     private void createPopups() {
-    	System.out.println("ACAAAAAAAAAAAA!!!!!!");
     	CheckoutData.INSTANCE.getCustomerShipAddresses();
     	CheckoutData.INSTANCE.getCustomerBillAddresses();
     	CheckoutData.ShipBill ship 

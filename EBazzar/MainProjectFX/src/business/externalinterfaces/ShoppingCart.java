@@ -12,7 +12,7 @@ public interface ShoppingCart {
     double getTotalPrice();
     boolean deleteCartItem(String name);
     boolean isEmpty();
-
+    public String getId();
     //setters for testing
     
 }
