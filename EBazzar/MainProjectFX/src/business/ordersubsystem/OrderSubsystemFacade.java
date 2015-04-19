@@ -65,22 +65,20 @@ public class OrderSubsystemFacade implements OrderSubsystem {
 	@Override
 	public List<Order> getOrderHistory() throws BackendException {
 		// TODO Auto-generated method stub
-		List<Order> orders = new ArrayList<Order>();
-        try {
-			List<Integer> orderIds = getAllOrderIds();
-			for (int i=0; i<orderIds.size(); i++){
-				OrderImpl order = getOrderData(orderIds.get(i));
-				order.setOrderId(orderIds.get(i));
-				order.setOrderItems(getOrderItems(orderIds.get(i)));
-				orders.add(order);
-			}
+		try {
+			DbClassOrder dbClass = new DbClassOrder();
+			List<Order> orders = new ArrayList<Order>();
+	        List<Integer> orderIds = dbClass.getAllOrderIds(custProfile);
+	        for (int orderId : orderIds) {
+	        	List<OrderItem> orderItems = dbClass.getOrderItems(orderId);
+	        	OrderImpl order = dbClass.getOrderData(orderId);
+	        	order.setOrderItems(orderItems);
+	        	orders.add(order);
+	        }
+	        return orders;
 		} catch (DatabaseException e) {
-			// TODO Auto-generated catch block
 			throw new BackendException(e);
-			
 		}
-        LOG.info(custProfile.getCustId()+"requests Order History...");
-		return orders;
 	}
 
 	@Override
