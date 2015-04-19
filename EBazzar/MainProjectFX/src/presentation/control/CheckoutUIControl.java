@@ -53,6 +53,7 @@ public enum CheckoutUIControl {
 		CheckoutData data = CheckoutData.INSTANCE;
 
 		public void doUpdate() {
+			shippingBillingWindow = new ShippingBillingWindow();
 			CustomerProfile custProfile = data.getCustomerProfile();
 			Address defaultShipAddress = data.getDefaultShippingData();
 			Address defaultBillAddress = data.getDefaultBillingData();
@@ -89,7 +90,7 @@ public enum CheckoutUIControl {
 
 			if (rulesOk) {
 				boolean isLoggedIn = DataUtil.isLoggedIn();
-				shippingBillingWindow = new ShippingBillingWindow();
+				
 				if (!isLoggedIn) {
 					LoginUIControl loginControl = new LoginUIControl(
 							shippingBillingWindow, ShoppingCartWindow.INSTANCE,
@@ -99,6 +100,7 @@ public enum CheckoutUIControl {
 					doUpdate();
 				}
 			}
+			
 
 		}
 
