@@ -105,14 +105,17 @@ class DbClassAddress implements DbClass, DbClassAddressForTest {
     }
 	
     void buildSaveNewAddrQuery() throws DatabaseException {
-        query = "INSERT into altshipaddress " +
-        		"(addressid,custid,street,city,state,zip) " +
+        query = "INSERT into altaddress " +
+        		"(addressid,custid,street,city,state,zip, isship, issbill) " +
         		"VALUES(NULL," +
         				  custProfile.getCustId() + ",'" +
         				  address.getStreet()+"','" +
         				  address.getCity() + "','" +
         				  address.getState() + "','" +
-        				  address.getZip() + "')";
+        				  address.getZip() + "','" +
+        				  address.isShippingAddress()+ "','"+
+        				  address.isBillingAddress() + "','"+
+        				  "')";
     }
     void buildReadAllAddressesQuery() {
         query = "SELECT * from altaddress WHERE custid = "+custProfile.getCustId();
