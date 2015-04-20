@@ -1,8 +1,6 @@
 
 package business.ordersubsystem;
 
-import static business.util.StringParse.makeString;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -27,7 +25,6 @@ import business.externalinterfaces.Product;
 import business.externalinterfaces.ProductSubsystem;
 import business.externalinterfaces.ShoppingCart;
 import business.productsubsystem.ProductSubsystemFacade;
-import business.shoppingcartsubsystem.CartItemImpl;
 import business.util.Util;
 
 
@@ -171,7 +168,7 @@ class DbClassOrder implements DbClass {
                   cc.getCardNum()+"','"+
                   cc.getCardType()+"','"+
                   cc.getExpirationDate()+"','"+
-                  order.getOrderDate()+"',"+
+                  Util.localDateAsString(order.getOrderDate())+"',"+
                   order.getTotalPrice()+")";       
     }
 	

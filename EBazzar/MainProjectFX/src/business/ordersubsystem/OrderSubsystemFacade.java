@@ -71,6 +71,7 @@ public class OrderSubsystemFacade implements OrderSubsystem {
 	        	List<OrderItem> orderItems = dbClass.getOrderItems(orderId);
 	        	OrderImpl order = dbClass.getOrderData(orderId);
 	        	order.setOrderItems(orderItems);
+	        	order.setOrderId(orderId);
 	        	orders.add(order);
 	        }
 	        return orders;

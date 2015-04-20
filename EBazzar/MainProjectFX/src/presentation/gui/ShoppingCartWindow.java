@@ -46,7 +46,6 @@ public class ShoppingCartWindow extends Stage implements DefaultShoppingCartWind
 	@Override
 	public void setQuantityCol(TableColumn<CartItemPres, String> quantCol) {
 		quantityCol = quantCol;
-		
 	}
 	@Override
 	public HBox getBtnBox() {

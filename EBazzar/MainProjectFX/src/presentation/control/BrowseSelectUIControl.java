@@ -266,15 +266,18 @@ public enum BrowseSelectUIControl {
 	    	} catch(UnauthorizedException e) {   
 	        	displayError(e.getMessage());
 	        	return;
-	        }			
+	        }
+			if(ShoppingCartSubsystemFacade.INSTANCE.getLiveCart().isEmpty()){
+				shoppingCartWindow.displayInfo("");
+			}else{
 			try {
-				BrowseAndSelectController.INSTANCE.saveCart();
-			} catch (BackendException e) {
-				shoppingCartWindow.displayError("Database is unavailable. Please try again later.");
+					BrowseAndSelectController.INSTANCE.saveCart();
+				} catch (BackendException e) {
+					shoppingCartWindow.displayError("Database is unavailable. Please try again later.");
+				}
+				shoppingCartWindow.show();
+				shoppingCartWindow.displayInfo("You saved your Shopping Cart successfully!");
 			}
-
-			shoppingCartWindow.show();
-			shoppingCartWindow.displayInfo("You saved your Shopping Cart successfully!");
 		}
 		
 		public Text getMessageBar() {

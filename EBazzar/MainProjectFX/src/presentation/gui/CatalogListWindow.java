@@ -116,7 +116,7 @@ public class CatalogListWindow extends Stage implements MessageableWindow, Modif
 		btnBox.setAlignment(Pos.CENTER);
 		btnBox.getChildren().add(viewButton);
 		btnBox.getChildren().add(cartButton);
-		btnBox.getChildren().add(backButton);		
+		btnBox.getChildren().add(backButton);
         return btnBox;
 	}
 	

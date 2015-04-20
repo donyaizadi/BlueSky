@@ -2,7 +2,9 @@ package business.rulesbeans;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -11,8 +13,11 @@ import business.externalinterfaces.Address;
 import business.externalinterfaces.CartItem;
 import business.externalinterfaces.CreditCard;
 import business.externalinterfaces.DynamicBean;
+import business.externalinterfaces.Product;
 import business.externalinterfaces.ShoppingCart;
+import business.productsubsystem.ProductSubsystemFacade;
 import business.util.Pair;
+import business.util.TwoKeyHashMap;
 
 
 
