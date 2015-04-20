@@ -11,8 +11,10 @@ import business.exceptions.BackendException;
 import business.exceptions.BusinessException;
 import business.exceptions.RuleException;
 import business.externalinterfaces.Address;
+import business.externalinterfaces.CartItem;
 import business.externalinterfaces.CreditCard;
 import business.externalinterfaces.CustomerSubsystem;
+import business.externalinterfaces.ShoppingCart;
 import business.externalinterfaces.ShoppingCartSubsystem;
 import business.shoppingcartsubsystem.ShoppingCartSubsystemFacade;
 
@@ -46,7 +48,7 @@ public enum CheckoutController {
 	}
 
 	/** Asks the ShoppingCart Subsystem to run final order rules */
-	public void runFinalOrderRules(ShoppingCartSubsystem scss)
+	public void runFinalOrderRules()
 			throws RuleException, BusinessException {
 		// implement
 		ShoppingCartSubsystem sc = ShoppingCartSubsystemFacade.INSTANCE;
@@ -76,7 +78,13 @@ public enum CheckoutController {
 		// implement
 		CustomerSubsystem cust = (CustomerSubsystem) SessionCache.getInstance()
 				.get(BusinessConstants.CUSTOMER);
-		cust.submitOrder();
+		ShoppingCartSubsystem sc = ShoppingCartSubsystemFacade.INSTANCE;
+		ShoppingCart shopCart = sc.getLiveCart();
+		List<CartItem> cartItems =shopCart.getCartItems();
+		for(CartItem cartItem : cartItems){
+			LOG.info("quantity "+cartItem.getQuantity());
+		}
+		//cust.submitOrder();
 	}
 
 	public List<Address> retrieveShippingAddresses() {

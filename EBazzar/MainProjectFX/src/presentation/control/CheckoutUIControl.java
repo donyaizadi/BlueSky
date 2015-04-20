@@ -53,6 +53,7 @@ public enum CheckoutUIControl {
 		CheckoutData data = CheckoutData.INSTANCE;
 
 		public void doUpdate() {
+			shippingBillingWindow = new ShippingBillingWindow();
 			CustomerProfile custProfile = data.getCustomerProfile();
 			Address defaultShipAddress = data.getDefaultShippingData();
 			Address defaultBillAddress = data.getDefaultBillingData();
@@ -89,7 +90,7 @@ public enum CheckoutUIControl {
 
 			if (rulesOk) {
 				boolean isLoggedIn = DataUtil.isLoggedIn();
-				shippingBillingWindow = new ShippingBillingWindow();
+				
 				if (!isLoggedIn) {
 					LoginUIControl loginControl = new LoginUIControl(
 							shippingBillingWindow, ShoppingCartWindow.INSTANCE,
@@ -99,6 +100,7 @@ public enum CheckoutUIControl {
 					doUpdate();
 				}
 			}
+			
 
 		}
 
@@ -317,14 +319,23 @@ public enum CheckoutUIControl {
 	private class SubmitHandler implements EventHandler<ActionEvent> {
 		@Override
 		public void handle(ActionEvent evt) {
-			orderCompleteWindow = new OrderCompleteWindow();
+		    try {
+				CheckoutController.INSTANCE.runFinalOrderRules();
+			} catch (RuleException e1) {
+				// TODO Auto-generated catch block
+				finalOrderWindow.displayError(e1.getMessage());
+			} catch (BusinessException e1) {
+				// TODO Auto-generated catch block
+			    finalOrderWindow.displayError(e1.getMessage());
+			}
 			try {
+				orderCompleteWindow = new OrderCompleteWindow();
 				CheckoutController.INSTANCE.submitFinalOrder();
 				orderCompleteWindow.show();
 				finalOrderWindow.clearMessages();
 				finalOrderWindow.hide();
 			} catch (BackendException e) {
-				LOG.severe("Error ocurred trying to save the order");
+				LOG.severe(e.getMessage());
 			}
 
 		}
