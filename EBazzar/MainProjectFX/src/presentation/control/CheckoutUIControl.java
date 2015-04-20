@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.text.Text;
@@ -383,8 +384,19 @@ public enum CheckoutUIControl {
 			EventHandler<ActionEvent> {
 		@Override
 		public void handle(ActionEvent evt) {
-			CatalogListWindow.getInstance().show();
-			orderCompleteWindow.hide();
+			try {
+				CatalogListWindow catalogWindow = CatalogListWindow
+						.getInstance(BrowseSelectUIControl.INSTANCE
+								.getPrimaryState(), FXCollections
+								.observableList(BrowseSelectData.INSTANCE
+										.getCatalogList()));
+				catalogWindow.show();
+				orderCompleteWindow.hide();
+			} catch (BackendException e) {
+				// TODO Auto-generated catch block
+				LOG.severe(e.getMessage());
+			}
+
 		}
 	}
 
