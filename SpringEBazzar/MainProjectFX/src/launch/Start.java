@@ -1,5 +1,10 @@
 package launch;
 
+
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -23,10 +28,14 @@ import presentation.control.ViewOrdersUIControl;
 
 
 public class Start extends Application {
+	public static ApplicationContext ctx;
+	
 	public static void main(String[] args) {
+		ctx = new ClassPathXmlApplicationContext(
+				"resources/application.xml");	
 		launch(args);
 	}
-	
+
 	private Stage primaryStage; 
 	private Text messageBar = new Text();
 	
