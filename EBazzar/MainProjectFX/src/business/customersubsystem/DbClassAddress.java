@@ -105,6 +105,9 @@ class DbClassAddress implements DbClass, DbClassAddressForTest {
     }
 	
     void buildSaveNewAddrQuery() throws DatabaseException {
+    	int shipAdd = (address.isShippingAddress()) ? 1 : 0;
+    	int billAdd = (address.isBillingAddress()) ? 1 : 0;
+    	
         query = "INSERT into altaddress " +
         		"(custid,street,city,state,zip, isship, isbill) " +
         		"VALUES(" +
@@ -113,9 +116,12 @@ class DbClassAddress implements DbClass, DbClassAddressForTest {
         				  address.getCity() + "','" +
         				  address.getState() + "','" +
         				  address.getZip() + "','" +
-        				  address.isShippingAddress()+ "','"+
-        				  address.isBillingAddress()+
+        				  shipAdd+ "','"+
+        				  billAdd+
         				  "')";
+        
+        
+        System.out.println("test your query"+query);
     }
     void buildReadAllAddressesQuery() {
         query = "SELECT * from altaddress WHERE custid = "+custProfile.getCustId();
