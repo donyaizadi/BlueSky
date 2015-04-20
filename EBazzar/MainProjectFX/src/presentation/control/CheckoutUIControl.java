@@ -57,7 +57,7 @@ public enum CheckoutUIControl {
 			CustomerProfile custProfile = data.getCustomerProfile();
 			Address defaultShipAddress = data.getDefaultShippingData();
 			Address defaultBillAddress = data.getDefaultBillingData();
-			
+
 			shippingBillingWindow.setShippingAddress(custProfile.getFirstName()
 					+ " " + custProfile.getLastName(),
 					defaultShipAddress.getStreet(),
@@ -90,7 +90,7 @@ public enum CheckoutUIControl {
 
 			if (rulesOk) {
 				boolean isLoggedIn = DataUtil.isLoggedIn();
-				
+
 				if (!isLoggedIn) {
 					LoginUIControl loginControl = new LoginUIControl(
 							shippingBillingWindow, ShoppingCartWindow.INSTANCE,
@@ -100,7 +100,6 @@ public enum CheckoutUIControl {
 					doUpdate();
 				}
 			}
-			
 
 		}
 
@@ -183,6 +182,7 @@ public enum CheckoutUIControl {
 						shippingBillingWindow
 								.displayError("New shipping address not saved. Message: "
 										+ e.getMessage());
+						rulesOk = false;
 					}
 				}
 				if (cleansedBillAddress != null) {
@@ -193,14 +193,18 @@ public enum CheckoutUIControl {
 						shippingBillingWindow
 								.displayError("New billing address not saved. Message: "
 										+ e.getMessage());
+						rulesOk = false;
 					}
 				}
-				CheckoutController.INSTANCE.setBillingAndShippingToLivingCart(
-						shippingBillingWindow.getBillingAddress(),
-						shippingBillingWindow.getShippingAddress());
-				paymentWindow = new PaymentWindow();
-				paymentWindow.show();
-				shippingBillingWindow.hide();
+				if (rulesOk) {
+					CheckoutController.INSTANCE
+							.setBillingAndShippingToLivingCart(
+									shippingBillingWindow.getBillingAddress(),
+									shippingBillingWindow.getShippingAddress());
+					paymentWindow = new PaymentWindow();
+					paymentWindow.show();
+					shippingBillingWindow.hide();
+				}
 			}
 		}
 	}
@@ -268,9 +272,11 @@ public enum CheckoutUIControl {
 				CheckoutController.INSTANCE.runPaymentRules(
 						shippingBillingWindow.getBillingAddress(),
 						paymentWindow.getCreditCardFromWindow());
-				CheckoutController.INSTANCE.setPaymentToLivingCart(paymentWindow.getCreditCardFromWindow());
+				CheckoutController.INSTANCE
+						.setPaymentToLivingCart(paymentWindow
+								.getCreditCardFromWindow());
 				// CheckoutController.INSTANCE.verifyCreditCard();
-				
+
 				paymentWindow.clearMessages();
 				paymentWindow.hide();
 				termsWindow = new TermsWindow();
@@ -319,14 +325,14 @@ public enum CheckoutUIControl {
 	private class SubmitHandler implements EventHandler<ActionEvent> {
 		@Override
 		public void handle(ActionEvent evt) {
-		    try {
+			try {
 				CheckoutController.INSTANCE.runFinalOrderRules();
 			} catch (RuleException e1) {
 				// TODO Auto-generated catch block
 				finalOrderWindow.displayError(e1.getMessage());
 			} catch (BusinessException e1) {
 				// TODO Auto-generated catch block
-			    finalOrderWindow.displayError(e1.getMessage());
+				finalOrderWindow.displayError(e1.getMessage());
 			}
 			try {
 				orderCompleteWindow = new OrderCompleteWindow();
