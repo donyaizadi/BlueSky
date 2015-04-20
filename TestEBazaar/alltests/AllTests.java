@@ -58,7 +58,8 @@ public class AllTests extends TestSuite {
 		suite.addTest(new TestSuite(performancetests.RulesPerformanceTests.class));
 		suite.addTest(new TestSuite(unittests.business.StringParseTest.class));
 		suite.addTest(new TestSuite(unittests.middleware.dataaccess.SimpleConnectionPoolTest.class));
-		
+		suite.addTest(new TestSuite(daotests.DBClassShoppingCartTest.class));
+		suite.addTest(new TestSuite(subsystemtests.ShoppingCartSubsystemTest.class));
 		//$JUnit-END$
 		return suite;
 	}
