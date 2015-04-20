@@ -87,12 +87,12 @@ public class DbClassShoppingCart implements DbClass, DbClassShoppingCartForTest 
     
     //precondition: cart and custprofile has been stored as instance variable
     private void buildSaveCartQuery() {
-    	query =  "INSERT INTO shopcarttbl (shopcartid, custid,shipaddress1, " + 
+    	query =  "INSERT INTO shopcarttbl (custid,shipaddress1, " + 
     		"shipaddress2, shipcity, shipstate, shipzipcode, billaddress1, " + 
     		"billaddress2, billcity, billstate, billzipcode, nameoncard, " +
     		"expdate,cardtype, cardnum, totalpriceamount, totalshipmentcost, "+ 
     		"totaltaxamount, totalamountcharged) " +
-    		"VALUES (NULL, " + custProfile.getCustId() + ", '" + cart.getShippingAddress().getStreet() + "', '" + 
+    		"VALUES (" + custProfile.getCustId() + ", '" + cart.getShippingAddress().getStreet() + "', '" + 
     		   "" + cart.getShippingAddress().getCity() + "', '" + cart.getShippingAddress().getState() + "', '" +
     		   cart.getShippingAddress().getZip() + "', '" + cart.getBillingAddress().getStreet() + "', '" + 
     		   "" + "', '" + cart.getBillingAddress().getCity() + "', '" + cart.getBillingAddress().getState() + "', '" +
