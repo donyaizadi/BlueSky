@@ -106,7 +106,7 @@ class DbClassAddress implements DbClass, DbClassAddressForTest {
 	
     void buildSaveNewAddrQuery() throws DatabaseException {
         query = "INSERT into altaddress " +
-        		"(custid,street,city,state,zip, isship, issbill) " +
+        		"(custid,street,city,state,zip, isship, isbill) " +
         		"VALUES(" +
         				  custProfile.getCustId() + ",'" +
         				  address.getStreet()+"','" +
