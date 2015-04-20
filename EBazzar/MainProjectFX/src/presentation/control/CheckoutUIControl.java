@@ -74,6 +74,7 @@ public enum CheckoutUIControl {
 
 		@Override
 		public void handle(ActionEvent evt) {
+			
 			ShoppingCartWindow.INSTANCE.clearMessages();
 			ShoppingCartWindow.INSTANCE.setTableAccessByRow();
 			ShoppingCartWindow.INSTANCE.hide();
@@ -276,17 +277,26 @@ public enum CheckoutUIControl {
 				CheckoutController.INSTANCE
 						.setPaymentToLivingCart(paymentWindow
 								.getCreditCardFromWindow());
-				// CheckoutController.INSTANCE.verifyCreditCard();
 
-				paymentWindow.clearMessages();
-				paymentWindow.hide();
-				termsWindow = new TermsWindow();
-				termsWindow.show();
 			} catch (RuleException e) {
 				paymentWindow.displayError(e.getMessage());
 			} catch (BusinessException e) {
 				paymentWindow.displayError(ErrorMessages.DATABASE_ERROR);
 			}
+			
+			 try {
+				CheckoutController.INSTANCE.verifyCreditCard();
+				paymentWindow.clearMessages();
+				paymentWindow.hide();
+				termsWindow = new TermsWindow();
+				termsWindow.show();
+			} catch (BusinessException e) {
+				// TODO Auto-generated catch block
+				LOG.severe(e.getMessage());
+				paymentWindow.displayError(e.getMessage());
+			}
+
+			
 		}
 	}
 
