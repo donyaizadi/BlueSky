@@ -114,7 +114,7 @@ class DbClassAddress implements DbClass, DbClassAddressForTest {
         				  address.getState() + "','" +
         				  address.getZip() + "','" +
         				  address.isShippingAddress()+ "','"+
-        				  address.isBillingAddress() + "','"+
+        				  address.isBillingAddress()+
         				  "')";
     }
     void buildReadAllAddressesQuery() {
