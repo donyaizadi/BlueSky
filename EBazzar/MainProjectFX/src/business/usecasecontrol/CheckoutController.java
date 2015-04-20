@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import presentation.data.BrowseSelectData;
 import business.BusinessConstants;
 import business.SessionCache;
 import business.exceptions.BackendException;
@@ -78,13 +79,8 @@ public enum CheckoutController {
 		// implement
 		CustomerSubsystem cust = (CustomerSubsystem) SessionCache.getInstance()
 				.get(BusinessConstants.CUSTOMER);
-		ShoppingCartSubsystem sc = ShoppingCartSubsystemFacade.INSTANCE;
-		ShoppingCart shopCart = sc.getLiveCart();
-		List<CartItem> cartItems =shopCart.getCartItems();
-		for(CartItem cartItem : cartItems){
-			LOG.info("quantity "+cartItem.getQuantity());
-		}
-		//cust.submitOrder();
+		BrowseSelectData.INSTANCE.updateShoppingCart();
+		cust.submitOrder();
 	}
 
 	public List<Address> retrieveShippingAddresses() {
