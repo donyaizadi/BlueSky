@@ -142,6 +142,7 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
      * Use to supply all stored addresses of a customer when he wishes to select an
 	 * address in ship/bill window 
 	 */
+    public List<Address> getAllAddresses() throws BackendException {
     	DbClassAddress dbClassAddress = new DbClassAddress();
     	try {
     		dbClassAddress.readAllAddresses(customerProfile);
