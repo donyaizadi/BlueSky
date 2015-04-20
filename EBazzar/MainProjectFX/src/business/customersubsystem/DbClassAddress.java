@@ -166,13 +166,42 @@ class DbClassAddress implements DbClass, DbClassAddressForTest {
     }
     
     void populateDefaultShipAddress(ResultSet rs) throws DatabaseException {
-       //implement
-        
-    }
+        //implement by Arun
+     	
+     	try {
+             if(rs.next()){
+                 defaultShipAddress = new AddressImpl(rs.getString("shipaddress1"),
+                                                  rs.getString("shipcity"),
+                                                  rs.getString("shipstate"),
+                                                  rs.getString("shipzipcode"),
+                                                  true,
+                                                  false);
+             }          
+         }
+         catch(SQLException e) {
+             throw new DatabaseException(e);
+         }
+     	 
+         
+     }
+    
+    
     void populateDefaultBillAddress(ResultSet rs) throws DatabaseException {
-        //implement    
+        //implement by Arun    
+    	 try {
+             if(rs.next()){
+                 defaultBillAddress = new AddressImpl(rs.getString("billaddress1"),
+                                                  rs.getString("billcity"),
+                                                  rs.getString("billstate"),
+                                                  rs.getString("billzipcode"),
+                                                  false,
+                                                  true);
+             }          
+         }
+         catch(SQLException e) {
+             throw new DatabaseException(e);
+         }
     }
-	
 	
     /* used only when we read from the database
      */
