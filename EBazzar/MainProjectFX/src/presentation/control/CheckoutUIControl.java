@@ -74,25 +74,18 @@ public enum CheckoutUIControl {
 
 		@Override
 		public void handle(ActionEvent evt) {
-			
-			ShoppingCartWindow.INSTANCE.clearMessages();
-			ShoppingCartWindow.INSTANCE.setTableAccessByRow();
-			ShoppingCartWindow.INSTANCE.hide();
+
+
 
 			boolean rulesOk = true;
 			/* check that cart is not empty before going to next screen */
 
-			// try {
-			// usecaseControl.runShoppingCartRules();
-			// } catch (RuleException e) {
-			// //handle
-			// } catch (BusinessException e) {
-			// //handle
-			// }
-
-			if (rulesOk) {
+			try {
+				CheckoutController.INSTANCE.runShoppingCartRules();
 				boolean isLoggedIn = DataUtil.isLoggedIn();
-
+				ShoppingCartWindow.INSTANCE.clearMessages();
+				ShoppingCartWindow.INSTANCE.setTableAccessByRow();
+				ShoppingCartWindow.INSTANCE.hide();
 				if (!isLoggedIn) {
 					LoginUIControl loginControl = new LoginUIControl(
 							shippingBillingWindow, ShoppingCartWindow.INSTANCE,
@@ -101,6 +94,12 @@ public enum CheckoutUIControl {
 				} else {
 					doUpdate();
 				}
+			} catch (RuleException e) {
+				// handle
+				ShoppingCartWindow.INSTANCE.displayError(e.getMessage());
+			} catch (BusinessException e) {
+				// handle
+				ShoppingCartWindow.INSTANCE.displayError(e.getMessage());
 			}
 
 		}
@@ -283,8 +282,8 @@ public enum CheckoutUIControl {
 			} catch (BusinessException e) {
 				paymentWindow.displayError(ErrorMessages.DATABASE_ERROR);
 			}
-			
-			 try {
+
+			try {
 				CheckoutController.INSTANCE.verifyCreditCard();
 				paymentWindow.clearMessages();
 				paymentWindow.hide();
@@ -296,7 +295,6 @@ public enum CheckoutUIControl {
 				paymentWindow.displayError(e.getMessage());
 			}
 
-			
 		}
 	}
 
