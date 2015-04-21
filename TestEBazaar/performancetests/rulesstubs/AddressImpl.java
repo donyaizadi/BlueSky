@@ -72,14 +72,7 @@ public class AddressImpl implements Address{
         return sb.toString();
     }
 
-<<<<<<< Updated upstream
-	
-
-	
-	
-=======
     @Override
->>>>>>> Stashed changes
 	public String getStreet() {
 		return street;
 	}
