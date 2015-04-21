@@ -15,8 +15,8 @@ public class AllTests extends TestSuite {
     static Logger log = Logger.getLogger(AllTests.class.getName());
     //for JSF project the path is
     // <project_name>\\src\\java\\properties\\dbconfig.properites
-    private static final String LOC_DB_PROPS = "\\MainProjectFXDemo\\src\\resources\\dbconfig.properties";
-    private static final String LOC_RULES_PROPS = "\\MainProjectFXDemo\\src\\resources\\rulesconfig.properties";
+    private static final String LOC_DB_PROPS = "/MainProjectFX/src/resources/dbconfig.properties";
+    private static final String LOC_RULES_PROPS = "/MainProjectFX/src/resources/rulesconfig.properties";
     private static final String context = computeDir();
     static {
     	log.info("Looking here: " + context + LOC_DB_PROPS);
@@ -41,9 +41,9 @@ public class AllTests extends TestSuite {
 		// when accessing from outside the project.
     	if (!initialized) {
     		//DbConfigProperties.readProps(context + LOC_DB_PROPS);
-    		DbConfigProperties.readProps("resources\\dbconfig.properties");
+    		DbConfigProperties.readProps("resources/dbconfig.properties");
     		//RulesConfigProperties.readProps(context + LOC_RULES_PROPS);
-    		RulesConfigProperties.readProps("resources\\rulesconfig.properties");
+    		RulesConfigProperties.readProps("resources/rulesconfig.properties");
     		initialized = true;
     	}
     }

@@ -31,15 +31,12 @@ public class BrowseAndSelectTest extends TestCase {
         ProductSubsystem pss = new ProductSubsystemFacade();
 		List<String> catNames=null;
         
-		try {
+		try {/*
 			catNames = pss.getCatalogList()
 					      .stream()
 					      .map(cat -> cat.getName())
-					      .collect(Collectors.toList());
+					      .collect(Collectors.toList());*/
                 
-		}
-		catch(BackendException ex){
-			fail("DatabaseException: " + ex.getMessage());
 		}
 		finally {
 			assertTrue(catNames != null);

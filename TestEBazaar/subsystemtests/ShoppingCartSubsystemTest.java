@@ -27,7 +27,7 @@ public class ShoppingCartSubsystemTest extends TestCase {
 		int idExpected = DbQueries.readIdShoppingCart();
 		ShoppingCartSubsystem scs = ShoppingCartSubsystemFacade.INSTANCE;
 		CustomerSubsystem css = new CustomerSubsystemFacade();
-		scs.setCustomerProfile(css.getGenericCustomerProfile());
+		scs.setCustomerProfile(css.getCustomerProfile());
 
 		try {
 			scs.retrieveSavedCart();
@@ -39,6 +39,5 @@ public class ShoppingCartSubsystemTest extends TestCase {
 		ShoppingCart liveCart = scs.getLiveCart();
 		int idReturned = Integer.parseInt(liveCart.getId());
 		assertTrue(idExpected == idReturned);
-
 	}
 }

@@ -83,20 +83,16 @@ public class AddressImpl implements Address{
 
 	
 	
-	@Override
 	public String getStreet() {
 		return street;
 	}
-	@Override
 	public void setStreet(String s) {
 		street = s;
 		
 	}
-	@Override
 	public boolean isShippingAddress() {
 		return isShippingAddress;
 	}
-	@Override
 	public boolean isBillingAddress() {
 		
 		return isBillingAddress;

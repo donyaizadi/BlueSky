@@ -10,6 +10,7 @@ import java.util.List;
 
 import business.customersubsystem.CustomerSubsystemFacade;
 import business.externalinterfaces.Address;
+import business.externalinterfaces.CustomerProfile;
 import business.externalinterfaces.CustomerSubsystem;
 import business.externalinterfaces.ShoppingCart;
 import business.rulesbeans.ShopCartBean;
@@ -109,8 +110,8 @@ public class DbQueries {
 			    
                 while(rs.next()) {
                     
-                    String street = rs.getString("street");
-                    String city = rs.getString("city");
+                    String street = rs.getString("custid");
+                    String city = rs.getString("fname");
                     String state = rs.getString("state");
                     String zip = rs.getString("zip");
                     
@@ -133,6 +134,97 @@ public class DbQueries {
 		
 	}
 	
+
+	
+	
+	public static void insertCustomerObj()
+	{
+		String query = insertCustObjSql();
+		try {
+			stmt = acctCon.createStatement();
+			stmt.executeUpdate(query);
+			stmt.close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			
+		}
+		
+	}
+	
+	
+	
+	public static int readLatestCustId()
+	{
+		String query = "SELECT MAX(custId) FROM customer";
+		int id = 0;
+		try {
+			stmt = acctCon.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			if(rs.next())
+			{
+				id = rs.getInt("MAX(custId)");
+			}
+			stmt.close();
+                
+                    
+	            
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			
+		}
+		return id;
+		
+	}
+	
+	
+	public static String readShipmentAddresses(int id) {
+		String query = readShipmentAddressesSql(id);
+		String str = "";
+		try 
+		{
+			stmt = acctCon.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			if(rs.next())
+			{
+				str = rs.getString("shipaddress1");
+			}
+			stmt.close();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			
+		}
+		return str;
+
+		
+		
+	}
+	
+	public static int readCustomerProfile() {
+		String query = readCustProfileSql();
+		int id = 0;
+		try {
+			stmt = acctCon.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			if(rs.next())
+			{
+				id = rs.getInt("custid");
+			}
+			stmt.close();
+                
+                    
+	            
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			
+		}
+		return id;
+		
+	}
+	
+		
 	public static int readIdShoppingCart(){
 		String query = readSavedShoppingCartSql();
 		int id = 0;
@@ -244,6 +336,21 @@ public class DbQueries {
 	public static String readAddressesSql() {
 		return "SELECT * from altaddress WHERE custid = 1";
 	}
+	public static String readCustProfileSql() {
+		return "SELECT * from customer WHERE custid= 1";
+	}
+	
+	public static String readShipmentAddressesSql(int id)
+	{
+		return "SELECT shipaddress1 FROM `Customer` WHERE custId = "+ id;
+	}
+	
+	public static String insertCustObjSql()
+	{
+		return "INSERT INTO Customer VALUES (null,null,null,null,null,null,null,'81000 N. 4th St.',null,null,null,null,null,null,null,null,null,null,null,null,null)";
+	}
+	
+	
 	public static String readSavedShoppingCartSql(){
 		return "SELECT * from shopcarttbl WHERE custid= 1";
 	}
