@@ -3,7 +3,10 @@ package business.usecasecontrol;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import presentation.data.DataUtil;
+import launch.Start;
 import middleware.exceptions.DatabaseException;
 import business.RulesQuantity;
 import business.exceptions.BackendException;
@@ -16,6 +19,7 @@ import business.externalinterfaces.CustomerSubsystem;
 import business.externalinterfaces.Product;
 import business.externalinterfaces.ProductSubsystem;
 import business.externalinterfaces.Rules;
+import business.externalinterfaces.ShoppingCart;
 import business.externalinterfaces.ShoppingCartSubsystem;
 import business.productsubsystem.DbClassCatalogTypes;
 import business.productsubsystem.ProductSubsystemFacade;
@@ -23,21 +27,25 @@ import business.shoppingcartsubsystem.ShoppingCartSubsystemFacade;
 
 public enum BrowseAndSelectController {
 	INSTANCE;
+	@Inject
+	ShoppingCartSubsystem scss;
 	
 	public void updateShoppingCartItems(List<CartItem> cartitems) {
-		ShoppingCartSubsystemFacade.INSTANCE.updateShoppingCartItems(cartitems);
+		 scss =(ShoppingCartSubsystem) Start.ctx.getBean("scss");
+		scss.updateShoppingCartItems(cartitems);
 	}
 	
 	public List<CartItem> getCartItems() {
-		return ShoppingCartSubsystemFacade.INSTANCE.getCartItems();
+		return scss.getCartItems();
 	}
 	
 	/** Makes saved cart live in subsystem and then returns the new list of cartitems */
 	public void retrieveSavedCart() {
-		ShoppingCartSubsystem shopCartSS = ShoppingCartSubsystemFacade.INSTANCE;
-		
 		// Saved cart was retrieved during login
-		shopCartSS.makeSavedCartLive();	
+		scss =(ShoppingCartSubsystem) Start.ctx.getBean("scss");
+		scss.makeSavedCartLive();	
+		
+		System.out.println("EPAAAA "+scss.getCartItems().size());
 	}
 	
 	public void runQuantityRules(Product product, String quantityRequested)
@@ -74,6 +82,6 @@ public enum BrowseAndSelectController {
 	}
 
 	public void saveCart() throws BackendException {
-		ShoppingCartSubsystemFacade.INSTANCE.saveLiveCart();
+		scss.saveLiveCart();
 	}
 }

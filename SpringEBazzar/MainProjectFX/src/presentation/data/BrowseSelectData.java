@@ -100,6 +100,7 @@ public enum BrowseSelectData  {
 		List<CartItem> cartItems = new ArrayList<CartItem>();
 		List<CartItem> newlist = BrowseAndSelectController.INSTANCE.getCartItems();
 		if(newlist != null) cartItems = newlist;
+		Util.cartItemsToCartItemPres(cartItems);
 		cartData = FXCollections.observableList(Util.cartItemsToCartItemPres(cartItems));
 		BrowseSelectUIControl.INSTANCE.updateCartItems(cartData);
 	}

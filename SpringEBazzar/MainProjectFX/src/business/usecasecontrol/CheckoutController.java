@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import presentation.data.BrowseSelectData;
 import business.BusinessConstants;
 import business.SessionCache;
@@ -25,12 +27,12 @@ public enum CheckoutController {
 			.get(BusinessConstants.CUSTOMER);
 	private static final Logger LOG = Logger.getLogger(CheckoutController.class
 			.getPackage().getName());
-	ShoppingCartSubsystem sc = ShoppingCartSubsystemFacade.INSTANCE;
-
+	@Inject
+	ShoppingCartSubsystem scss;
 	public void runShoppingCartRules() throws RuleException, BusinessException {
 		// implement
-		ShoppingCartSubsystem sc = ShoppingCartSubsystemFacade.INSTANCE;
-		sc.runShoppingCartRules();
+
+		scss.runShoppingCartRules();
 	}
 
 	public void runPaymentRules(Address addr, CreditCard cc)
@@ -52,8 +54,7 @@ public enum CheckoutController {
 	public void runFinalOrderRules()
 			throws RuleException, BusinessException {
 		// implement
-		ShoppingCartSubsystem sc = ShoppingCartSubsystemFacade.INSTANCE;
-		sc.runFinalOrderRules();
+		scss.runFinalOrderRules();
 	}
 
 	/**
@@ -62,10 +63,10 @@ public enum CheckoutController {
 	 */
 	public void verifyCreditCard() throws BusinessException {
 		// implement
-		ShoppingCartSubsystem sc = ShoppingCartSubsystemFacade.INSTANCE;
+
 		CustomerSubsystem cust = (CustomerSubsystem) SessionCache.getInstance()
 				.get(BusinessConstants.CUSTOMER);
-		cust.checkCreditCard(sc.getLiveCart().getPaymentInfo());
+		cust.checkCreditCard(scss.getLiveCart().getPaymentInfo());
 	}
 
 	public void saveNewAddress(Address addr) throws BackendException {
@@ -124,11 +125,11 @@ public enum CheckoutController {
 	}
 
 	public void setBillingAddressToLivingCart(Address add) {
-		sc.setBillingAddress(add);
+		scss.setBillingAddress(add);
 	}
 
 	public void setShippingAddressToLivingCart(Address add) {
-		sc.setShippingAddress(add);
+		scss.setShippingAddress(add);
 	}
 
 	public void setBillingAndShippingToLivingCart(Address bill, Address ship) {
@@ -137,7 +138,7 @@ public enum CheckoutController {
 	}
 	
 	public void setPaymentToLivingCart(CreditCard cc){
-		sc.setPaymentInfo(cc);
+		scss.setPaymentInfo(cc);
 	}
 
 }

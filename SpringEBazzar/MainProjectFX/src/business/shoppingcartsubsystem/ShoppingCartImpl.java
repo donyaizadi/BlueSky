@@ -18,7 +18,7 @@ class ShoppingCartImpl implements ShoppingCart {
     private CreditCard creditCard;
     @SuppressWarnings("unused")
 	private String cartId;
-      
+    private String customerId;
     ShoppingCartImpl(List<CartItem> cartItems) {
         this.cartItems = cartItems;
     }
@@ -112,6 +112,16 @@ class ShoppingCartImpl implements ShoppingCart {
 	public String getId() {
 		// TODO Auto-generated method stub
 		return cartId;
+	}
+	@Override
+	public String getCustomerId() {
+		// TODO Auto-generated method stub
+		return customerId;
+	}
+	@Override
+	public void setCustomerId(String id) {
+		this.customerId=id;
+		
 	}
     
     

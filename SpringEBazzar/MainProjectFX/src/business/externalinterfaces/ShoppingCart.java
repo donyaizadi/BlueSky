@@ -13,6 +13,8 @@ public interface ShoppingCart {
     boolean deleteCartItem(String name);
     boolean isEmpty();
     public String getId();
+    public String getCustomerId();
+    public void setCustomerId(String id);
     //setters for testing
     
 }

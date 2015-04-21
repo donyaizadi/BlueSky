@@ -5,6 +5,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Service;
+
+import com.sun.org.apache.bcel.internal.util.ClassPath;
+
 import middleware.exceptions.DatabaseException;
 import middleware.externalinterfaces.DbClass;
 import business.BusinessConstants;
@@ -24,18 +32,24 @@ import business.externalinterfaces.Rules;
 import business.externalinterfaces.ShoppingCart;
 import business.externalinterfaces.ShoppingCartSubsystem;
 
-public enum ShoppingCartSubsystemFacade implements ShoppingCartSubsystem {
-	INSTANCE;
+@Service("scss")
+public class ShoppingCartSubsystemFacade implements ShoppingCartSubsystem {
+	//INSTANCE;
 	
 	ShoppingCartImpl liveCart = new ShoppingCartImpl(new LinkedList<CartItem>());
 	ShoppingCartImpl savedCart;
 	Integer shopCartId;
 	CustomerProfile customerProfile;
 	Logger LOG = Logger.getLogger(this.getClass().getPackage().getName());
-	DbClassShoppingCart dbClass = new DbClassShoppingCart();
+	
+	//DbClassShoppingCart dbClass = new DbClassShoppingCart();
+	
+	@Inject
+	public IDbClassShoppingCart dbClass;
 	// interface methods
 	public void setCustomerProfile(CustomerProfile customerProfile) {
 		this.customerProfile = customerProfile;
+		
 	}
 	
 	public void makeSavedCartLive() {
@@ -165,5 +179,11 @@ public enum ShoppingCartSubsystemFacade implements ShoppingCartSubsystem {
 	public static DbClassShoppingCartForTest createTestCartDBClass(){
 		return new DbClassShoppingCart();
 	}
+	
+	
+	private ShoppingCartSubsystemFacade() {
+		// TODO Auto-generated constructor stub
+	}
+
 
 }

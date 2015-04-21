@@ -2,6 +2,8 @@ package presentation.control;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import launch.Start;
 import presentation.data.BrowseSelectData;
 import presentation.data.CartItemPres;
 import presentation.data.CatalogPres;
@@ -262,7 +265,8 @@ public enum BrowseSelectUIControl {
 	public CartContinueHandler getCartContinueHandler() {
 		return new CartContinueHandler();
 	}
-	
+	@Inject
+	ShoppingCartSubsystem scss;
 	private class SaveCartHandler implements EventHandler<ActionEvent>, Callback {
 		public void doUpdate() {
 			try {
@@ -271,7 +275,8 @@ public enum BrowseSelectUIControl {
 	        	displayError(e.getMessage());
 	        	return;
 	        }
-			if(ShoppingCartSubsystemFacade.INSTANCE.getLiveCart().isEmpty()){
+			scss =(ShoppingCartSubsystem) Start.ctx.getBean("scss");
+			if(scss.getLiveCart().isEmpty()){
 				shoppingCartWindow.displayInfo("");
 			}else{
 			try {

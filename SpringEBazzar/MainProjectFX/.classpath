@@ -19,5 +19,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.20-bin.jar"/>
+	<classpathentry kind="lib" path="lib/other/javaee-api-6.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

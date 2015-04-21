@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+
+import launch.Start;
 import middleware.creditverifcation.CreditVerificationFacade;
 import middleware.exceptions.DatabaseException;
 import middleware.exceptions.MiddlewareException;
@@ -43,13 +46,15 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	 * Use for loading order history, default addresses, default payment info,
 	 * saved shopping cart,cust profile after login
 	 */
+	@Inject
+	ShoppingCartSubsystem scss;
     public void initializeCustomer(Integer id, int authorizationLevel)	throws BackendException {
 	    boolean isAdmin = (authorizationLevel >= 1);
 		loadCustomerProfile(id, isAdmin);
 		loadDefaultShipAddress();
 		loadDefaultBillAddress();
 		loadDefaultPaymentInfo();
-		shoppingCartSubsystem = ShoppingCartSubsystemFacade.INSTANCE;
+		shoppingCartSubsystem =(ShoppingCartSubsystem) Start.ctx.getBean("scss");
 		shoppingCartSubsystem.setCustomerProfile(customerProfile);
 		shoppingCartSubsystem.retrieveSavedCart();
 		loadOrderData();
@@ -244,7 +249,7 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 
 	@Override
 	public void checkCreditCard(CreditCard cc) throws BusinessException {
-		ShoppingCart shoppingCart = ShoppingCartSubsystemFacade.INSTANCE.getLiveCart();
+		ShoppingCart shoppingCart = scss.getLiveCart();
 		Address billingAddress = shoppingCart.getBillingAddress();
 		CreditCard creditCard = shoppingCart.getPaymentInfo();
 	    Double amount = (double) 55;
