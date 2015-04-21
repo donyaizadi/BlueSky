@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import launch.Start;
 import presentation.data.BrowseSelectData;
 import business.BusinessConstants;
 import business.SessionCache;
@@ -29,9 +30,10 @@ public enum CheckoutController {
 			.getPackage().getName());
 	@Inject
 	ShoppingCartSubsystem scss;
+
 	public void runShoppingCartRules() throws RuleException, BusinessException {
 		// implement
-
+		scss = (ShoppingCartSubsystem) Start.ctx.getBean("scss");
 		scss.runShoppingCartRules();
 	}
 
@@ -51,8 +53,7 @@ public enum CheckoutController {
 	}
 
 	/** Asks the ShoppingCart Subsystem to run final order rules */
-	public void runFinalOrderRules()
-			throws RuleException, BusinessException {
+	public void runFinalOrderRules() throws RuleException, BusinessException {
 		// implement
 		scss.runFinalOrderRules();
 	}
@@ -85,8 +86,8 @@ public enum CheckoutController {
 	}
 
 	public List<Address> retrieveShippingAddresses() {
-		CustomerSubsystem cust = (CustomerSubsystem) SessionCache.getInstance()
-				.get(BusinessConstants.CUSTOMER);
+		CustomerSubsystem cust = (CustomerSubsystem) Start.ctx.getBean("css");
+
 		try {
 			List<Address> allAddresses = new ArrayList();
 			if (cust != null) {
@@ -109,9 +110,9 @@ public enum CheckoutController {
 				.get(BusinessConstants.CUSTOMER);
 		try {
 			List<Address> allAddresses = new ArrayList();
-			if(cust !=null){
-			 allAddresses = cust.getAllAddresses();
-			}else{
+			if (cust != null) {
+				allAddresses = cust.getAllAddresses();
+			} else {
 				return allAddresses;
 			}
 			return allAddresses.stream()
@@ -136,8 +137,8 @@ public enum CheckoutController {
 		setBillingAddressToLivingCart(bill);
 		setShippingAddressToLivingCart(ship);
 	}
-	
-	public void setPaymentToLivingCart(CreditCard cc){
+
+	public void setPaymentToLivingCart(CreditCard cc) {
 		scss.setPaymentInfo(cc);
 	}
 

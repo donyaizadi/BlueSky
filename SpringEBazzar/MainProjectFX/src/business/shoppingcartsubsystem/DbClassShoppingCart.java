@@ -46,11 +46,10 @@ import business.externalinterfaces.ShoppingCart;
 
 @Repository
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = DatabaseException.class)
-public class DbClassShoppingCart implements DbClass,
+public class DbClassShoppingCart implements
 		DbClassShoppingCartForTest, IDbClassShoppingCart {
 	private static final Logger LOG = Logger
 			.getLogger(DbClassShoppingCart.class.getPackage().getName());
-	private DataAccessSubsystem dataAccessSS = new DataAccessSubsystemFacade();
 
 	DataAccessSubsystem dataAccess;
 	ShoppingCartImpl cartImpl;
@@ -92,7 +91,6 @@ public class DbClassShoppingCart implements DbClass,
 	@Named("dataSourceAccounts")
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
-		System.out.println("jdbcTemplate is null? " + (jdbcTemplate == null));
 	}
 
 	private void buildGetIdQuery() {
@@ -217,7 +215,6 @@ public class DbClassShoppingCart implements DbClass,
 			}
 
 		} catch (DatabaseException e) {
-			dataAccessSS.rollback();
 			LOG.warning("Rolling back...");
 			throw (e);
 		} catch (EmptyResultDataAccessException x) {
@@ -332,8 +329,6 @@ public class DbClassShoppingCart implements DbClass,
 			}
 
 		} catch (DatabaseException e) {
-			dataAccessSS.rollback();
-			LOG.warning("Rolling back...");
 			throw (e);
 		} finally {
 			// dataAccessSS.releaseConnection(this);

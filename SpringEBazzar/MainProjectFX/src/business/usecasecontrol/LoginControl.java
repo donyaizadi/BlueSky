@@ -2,6 +2,7 @@
 package business.usecasecontrol;
 
 
+import launch.Start;
 import business.BusinessConstants;
 import business.DbClassLogin;
 import business.Login;
@@ -26,7 +27,7 @@ public class LoginControl {
 	}
 	
 	public CustomerSubsystem prepareAndStoreCustomerObject(Login login, int authorizationLevel) throws BackendException {
-		CustomerSubsystem customer = new CustomerSubsystemFacade();
+		CustomerSubsystem customer = (CustomerSubsystem)Start.ctx.getBean("css");
 		//need to place into SessionContext immediately since the facade will be used during
 		//initialization; alternative: createAddress, createCreditCard methods
 		//made to be static

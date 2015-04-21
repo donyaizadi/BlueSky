@@ -35,10 +35,10 @@ public enum CheckoutData {
 	}
 	
 	//Customer Ship Address Data
-	private ObservableList<CustomerPres> shipAddresses = loadShipAddresses();
+	private ObservableList<CustomerPres> shipAddresses;
 	
 	//Customer Bill Address Data
-	private ObservableList<CustomerPres> billAddresses = loadBillAddresses();
+	private ObservableList<CustomerPres> billAddresses;
 	
 	private List<CustomerPres> getShipAddresses(){
 		List<Address> shipAdresses = CheckoutController.INSTANCE.retrieveShippingAddresses();
@@ -105,7 +105,7 @@ public enum CheckoutData {
 	}
 	public Address getDefaultShippingData() {
 		//implement
-		List<String> add = DefaultData.DEFAULT_SHIP_DATA;
+//		List<String> add = DefaultData.DEFAULT_SHIP_DATA;
 //		return CustomerSubsystemFacade.createAddress(add.get(0), add.get(1), 
 //				add.get(2), add.get(3), true, false);
 		CustomerSubsystem cust = 

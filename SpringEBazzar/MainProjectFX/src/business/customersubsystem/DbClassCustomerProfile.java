@@ -4,6 +4,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import business.externalinterfaces.CustomerProfile;
 import middleware.DbConfigProperties;
 import middleware.dataaccess.DataAccessSubsystemFacade;
 import middleware.exceptions.DatabaseException;
@@ -11,68 +22,71 @@ import middleware.externalinterfaces.DataAccessSubsystem;
 import middleware.externalinterfaces.DbClass;
 import middleware.externalinterfaces.DbConfigKey;
 
+@Repository
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = DatabaseException.class)
+class DbClassCustomerProfile implements IDbClassCustomerProfile {
+	private static final Logger LOG = Logger
+			.getLogger(DbClassCustomerProfile.class.getPackage().getName());
 
-class DbClassCustomerProfile implements DbClass {
-	private static final Logger LOG = 
-		Logger.getLogger(DbClassCustomerProfile.class.getPackage().getName());
-	private DataAccessSubsystem dataAccessSS = 
-    	new DataAccessSubsystemFacade();
-    private final String READ = "Read";
-    private Integer custId;
-    String query;
-    private String queryType;
-    private CustomerProfileImpl customerProfile;
-    
-    CustomerProfileImpl getCustomerProfile(){
-        return customerProfile;
-    }
-    public void readCustomerProfile(Integer custId) throws DatabaseException {
-        this.custId = custId;
-        queryType=READ;
-        dataAccessSS.atomicRead(this);      	
-    }
- 
-    public void buildQuery() {
-    	LOG.info("Query for " + queryType + ": " + query);
-        if(queryType.equals(READ)){
-            buildReadQuery();
-        }
-    }
-    
-    void buildReadQuery() {
-        query = "SELECT custid,fname,lname "+
-                "FROM Customer "+
-                "WHERE custid = "+custId;
-    }
-    
- 
-    public void populateEntity(ResultSet resultSet) throws DatabaseException {
-        try {
-        
-            //we take the first returned row
-            if(resultSet.next()){
-                customerProfile = new CustomerProfileImpl(resultSet.getInt("custid"),
-                								resultSet.getString("fname"),
-                                               resultSet.getString("lname"));
-            }
-        }
-        catch(SQLException e){
-            throw new DatabaseException(e);
-        }
-    }
+	private final String READ = "Read";
+	private Integer custId;
+	String query;
+	private String queryType;
+	private CustomerProfileImpl customerProfile;
+	private JdbcTemplate jdbcTemplate;
 
+	public CustomerProfileImpl getCustomerProfile() {
+		return customerProfile;
+	}
 
-    public String getDbUrl() {
-    	DbConfigProperties props = new DbConfigProperties();	
-    	return props.getProperty(DbConfigKey.ACCOUNT_DB_URL.getVal());
- 
-    }
+	@Inject
+	@Named("dataSourceAccounts")
+	public void setDataSource(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
 
- 
-    public String getQuery() {
-        return query;
- 
-    }
+	// Template
+	private class CustomerRowMapper implements RowMapper<CustomerProfileImpl> {
+		public CustomerProfileImpl mapRow(ResultSet rs, int rowNum)
+				throws SQLException {
+			CustomerProfileImpl customer = new CustomerProfileImpl(
+					rs.getInt("custid"), rs.getString("fname"),
+					rs.getString("lname"));
 
- 
+			return customer;
+		}
+	}
+
+	public void readCustomerProfile(Integer custId) throws DatabaseException {
+		this.custId = custId;
+		queryType = READ;
+		buildQuery();
+		customerProfile = jdbcTemplate.queryForObject(query,
+				new CustomerRowMapper());
+	}
+
+	public void buildQuery() {
+
+		if (queryType.equals(READ)) {
+			buildReadQuery();
+		}
+		LOG.info("Query for " + queryType + ": " + query);
+	}
+
+	void buildReadQuery() {
+		query = "SELECT custid,fname,lname " + "FROM Customer "
+				+ "WHERE custid = " + custId;
+	}
+
+	public String getDbUrl() {
+		DbConfigProperties props = new DbConfigProperties();
+		return props.getProperty(DbConfigKey.ACCOUNT_DB_URL.getVal());
+
+	}
+
+	public String getQuery() {
+		return query;
+
+	}
+
 }

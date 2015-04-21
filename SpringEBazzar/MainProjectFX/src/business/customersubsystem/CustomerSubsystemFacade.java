@@ -6,6 +6,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Service;
 
 import launch.Start;
 import middleware.creditverifcation.CreditVerificationFacade;
@@ -28,7 +34,7 @@ import business.externalinterfaces.ShoppingCart;
 import business.externalinterfaces.ShoppingCartSubsystem;
 import business.ordersubsystem.OrderSubsystemFacade;
 import business.shoppingcartsubsystem.ShoppingCartSubsystemFacade;
-
+@Service("css")
 public class CustomerSubsystemFacade implements CustomerSubsystem {
 	private static final Logger LOGGER = Logger.getLogger(CustomerSubsystemFacade.class.getName());
 	//Subsystems
@@ -41,7 +47,6 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	CustomerProfileImpl customerProfile;
 	//Attributes
 	List<Order> orderHistory;
-	
 	/**
 	 * Use for loading order history, default addresses, default payment info,
 	 * saved shopping cart,cust profile after login
@@ -59,10 +64,14 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 		shoppingCartSubsystem.retrieveSavedCart();
 		loadOrderData();
     }
-    
+	@Inject
+	IDbClassCustomerProfile dbclass;
+	@Inject
+	IDbClassAddress dbClassAddress;
+	@Inject
+	IDbClassCreditCard dbClassCreditCard;
     void loadCustomerProfile(int id, boolean isAdmin) throws BackendException {
     	try {
-			DbClassCustomerProfile dbclass = new DbClassCustomerProfile();
 			dbclass.readCustomerProfile(id);
 			customerProfile = dbclass.getCustomerProfile();
 			customerProfile.setIsAdmin(isAdmin);
@@ -73,7 +82,6 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
     }
    
     void loadDefaultShipAddress() throws BackendException {
-    	DbClassAddress dbClassAddress = new DbClassAddress();
     	try {
 			dbClassAddress.readDefaultShipAddress(customerProfile);
 		} catch (DatabaseException e) {
@@ -83,7 +91,6 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
         defaultShipAddress = dbClassAddress.getDefaultShipAddress();
     }
 	void loadDefaultBillAddress() throws BackendException {
-		    DbClassAddress dbClassAddress = new DbClassAddress();
 		    try {
 				dbClassAddress.readDefaultBillAddress(customerProfile);
 			} catch (DatabaseException e) {
@@ -93,7 +100,6 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	        defaultBillAddress = dbClassAddress.getDefaultBillAddress();
 	}
 	void loadDefaultPaymentInfo() throws BackendException {
-		DbClassCreditCard dbClassCreditCard = new DbClassCreditCard();
 	    try {
 	    	dbClassCreditCard.readDefaultPaymentInfo(customerProfile);
 		} catch (DatabaseException e) {
@@ -116,9 +122,8 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
     
     public void saveNewAddress(Address addr) throws BackendException {
     	try {
-			DbClassAddress dbClass = new DbClassAddress();
-			dbClass.setAddress(addr);
-			dbClass.saveAddress(customerProfile);
+    		dbClassAddress.setAddress(addr);
+    		dbClassAddress.saveAddress(customerProfile);
 		} catch(DatabaseException e) {
 			LOGGER.log(Level.SEVERE, "Database Exception occur to save New Address", e);
 			throw new BackendException(e);
@@ -148,7 +153,6 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	 * address in ship/bill window 
 	 */
     public List<Address> getAllAddresses() throws BackendException {
-    	DbClassAddress dbClassAddress = new DbClassAddress();
     	try {
     		dbClassAddress.readAllAddresses(customerProfile);
             return dbClassAddress.getAddressList();
