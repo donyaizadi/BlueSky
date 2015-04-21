@@ -8,11 +8,13 @@ import java.util.logging.Logger;
 import test.DbQueries;
 import test.alltests.AllTests;
 import business.customersubsystem.CustomerSubsystemFacade;
+import business.customersubsystem.IDbClassAddress;
 import business.externalinterfaces.Address;
 import business.externalinterfaces.CustomerProfile;
 import business.externalinterfaces.CustomerSubsystem;
 import business.externalinterfaces.DbClassAddressForTest;
 import junit.framework.TestCase;
+import launch.Start;
 
 public class DbClassAddressTest extends TestCase {
 	
@@ -28,8 +30,8 @@ public class DbClassAddressTest extends TestCase {
 		List<Address> expected = DbQueries.readCustAddresses();
 		
 		//test real dbclass address
-		CustomerSubsystem css = new CustomerSubsystemFacade();
-		DbClassAddressForTest dbclass = css.getGenericDbClassAddress();
+		CustomerSubsystem css = Start.ctx.getBean(CustomerSubsystem.class);
+		IDbClassAddress dbclass = Start.ctx.getBean(IDbClassAddress.class);
 		CustomerProfile custProfile = css.getGenericCustomerProfile();
 		try {
 			dbclass.readAllAddresses(custProfile);

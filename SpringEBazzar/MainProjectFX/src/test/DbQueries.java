@@ -143,7 +143,6 @@ public class DbQueries {
 			e.printStackTrace();
 			
 		}
-		
 	}
 	
 	
