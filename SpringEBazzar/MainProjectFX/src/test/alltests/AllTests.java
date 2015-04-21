@@ -6,6 +6,9 @@ import java.util.logging.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import test.daotests.DBClassShoppingCartTest;
+import test.daotests.DbClassAddressTest;
+import test.subsystemtests.ShoppingCartSubsystemTest;
 import business.externalinterfaces.RulesConfigProperties;
 import middleware.DbConfigProperties;
 import junit.framework.Test;
@@ -55,7 +58,8 @@ public class AllTests extends TestSuite {
 	{
 		TestSuite suite = new TestSuite();
 		//$JUnit-BEGIN$ -- put fully qualified classnames of all tests here
-
+		suite.addTest(new DBClassShoppingCartTest());
+		suite.addTest(new ShoppingCartSubsystemTest());
 		//$JUnit-END$
 		return suite;
 	}

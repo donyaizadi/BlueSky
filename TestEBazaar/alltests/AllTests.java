@@ -52,14 +52,7 @@ public class AllTests extends TestSuite {
 	{
 		TestSuite suite = new TestSuite();
 		//$JUnit-BEGIN$ -- put fully qualified classnames of all tests here
-		suite.addTest(new TestSuite(integrationtests.BrowseAndSelectTest.class));
-		suite.addTest(new TestSuite(daotests.DbClassAddressTest.class));
-		suite.addTest(new TestSuite(subsystemtests.ProductSubsystemTest.class));
-		suite.addTest(new TestSuite(performancetests.RulesPerformanceTests.class));
-		suite.addTest(new TestSuite(unittests.business.StringParseTest.class));
-		suite.addTest(new TestSuite(unittests.middleware.dataaccess.SimpleConnectionPoolTest.class));
-		suite.addTest(new TestSuite(daotests.DBClassShoppingCartTest.class));
-		suite.addTest(new TestSuite(subsystemtests.ShoppingCartSubsystemTest.class));
+
 		//$JUnit-END$
 		return suite;
 	}
