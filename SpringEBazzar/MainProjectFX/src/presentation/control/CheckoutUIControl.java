@@ -1,5 +1,6 @@
 package presentation.control;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javafx.beans.value.ChangeListener;
@@ -346,6 +347,8 @@ public enum CheckoutUIControl {
 			try {
 				orderCompleteWindow = new OrderCompleteWindow();
 				CheckoutController.INSTANCE.submitFinalOrder();
+				ShoppingCartWindow.INSTANCE.setData(FXCollections
+						.observableList(new ArrayList<>()));
 				orderCompleteWindow.show();
 				finalOrderWindow.clearMessages();
 				finalOrderWindow.hide();
@@ -364,7 +367,10 @@ public enum CheckoutUIControl {
 	private class CancelOrderHandler implements EventHandler<ActionEvent> {
 		@Override
 		public void handle(ActionEvent evt) {
-			finalOrderWindow.displayInfo("Order Cancelled");
+			
+//			finalOrderWindow.displayInfo("Order Cancelled");
+			finalOrderWindow.hide();
+			ShoppingCartWindow.INSTANCE.show();
 		}
 	}
 

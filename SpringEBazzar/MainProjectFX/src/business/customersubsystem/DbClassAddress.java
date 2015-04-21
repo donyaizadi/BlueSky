@@ -27,7 +27,7 @@ import business.externalinterfaces.CustomerProfile;
 import business.externalinterfaces.DbClassAddressForTest;
 @Repository
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = DatabaseException.class)
-class DbClassAddress implements DbClass, DbClassAddressForTest, IDbClassAddress {
+class DbClassAddress implements DbClassAddressForTest, IDbClassAddress {
 	private static final Logger LOG = Logger.getLogger(DbClassAddress.class
 			.getName());
 	private DataAccessSubsystem dataAccessSS = new DataAccessSubsystemFacade();
