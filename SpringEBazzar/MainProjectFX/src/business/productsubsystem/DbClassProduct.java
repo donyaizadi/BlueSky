@@ -111,7 +111,8 @@ class DbClassProduct implements IDbClassProduct {
 	}
 
 	private void buildReadProductQuery() {
-		query = "SELECT * FROM Product WHERE productid = " + productId;
+//		query = "SELECT * FROM Product WHERE productid = " + productId;
+		query = "SELECT * FROM Product WHERE productid = ?";
 	}
 
 //	private void buildSaveNewQuery() {
@@ -157,10 +158,10 @@ class DbClassProduct implements IDbClassProduct {
 
 	@Transactional(value = "txManagerProducts", propagation=Propagation.REQUIRES_NEW, readOnly=true)
 	public List<Product> readProductList(Catalog cat) throws DatabaseException {
-		if (productList == null) {
+//		if (productList == null) {
 			return refreshProductList(cat);
-		}
-		return Collections.unmodifiableList(productList);
+//		}
+//		return Collections.unmodifiableList(productList);
 	}
 
 	@Transactional(value = "txManagerProducts", propagation=Propagation.SUPPORTS, readOnly=true)
@@ -193,8 +194,10 @@ class DbClassProduct implements IDbClassProduct {
 		this.productId = productId;
 		buildQuery();
 		try{
-//			product = jdbcTemplate.query(query, new ProductRowMapper());
-			product = jdbcTemplate.queryForObject(query, product.getClass());
+//			List<Product> p = jdbcTemplate.query(query, new ProductRowMapper());
+//			product = p.get(0);
+			product = (Product)jdbcTemplate.queryForObject(query, new Object[] {productId}, new ProductRowMapper());
+//			product = jdbcTemplate.queryForObject(query, product.getClass());
 		} catch(DataAccessException e) {
 			LOG.warning("Rolling back transaction for readProduct with query = " + query);
 			LOG.warning("Error details:\n" + e.getMessage());

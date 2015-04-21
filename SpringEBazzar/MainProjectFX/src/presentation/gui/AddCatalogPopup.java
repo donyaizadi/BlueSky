@@ -2,6 +2,7 @@ package presentation.gui;
 
 import presentation.data.CatalogPres;
 import presentation.data.DefaultData;
+import presentation.data.ManageProductsData;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -97,6 +98,7 @@ public class AddCatalogPopup extends Popup {
 				CatalogPres catPres = new CatalogPres();
 				catPres.setCatalog(newCat);
 				maintainCatalogsWindow.addItem(catPres);
+
 				messageBar.setText("");
 				hide();
 			}	   

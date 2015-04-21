@@ -33,6 +33,7 @@ public class CatalogListWindow extends Stage implements MessageableWindow, Modif
 		if(instance == null) {
 			instance = new CatalogListWindow(primary, list);
 		}
+		instance.setData(list);
 		return instance;
 	}
 	//useful if window is known to be populated
