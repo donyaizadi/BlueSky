@@ -92,7 +92,7 @@ public class DbClassShoppingCart implements DbClass, DbClassShoppingCartForTest 
     		"billaddress2, billcity, billstate, billzipcode, nameoncard, " +
     		"expdate,cardtype, cardnum, totalpriceamount, totalshipmentcost, "+ 
     		"totaltaxamount, totalamountcharged) " +
-    		"VALUES (" + custProfile.getCustId() + ", '" + cart.getShippingAddress().getStreet() + "', '" + 
+    		"VALUES (" + custProfile.getCustId() + ", '" + cart.getShippingAddress().getStreet() + "', '','" + 
     		   "" + cart.getShippingAddress().getCity() + "', '" + cart.getShippingAddress().getState() + "', '" +
     		   cart.getShippingAddress().getZip() + "', '" + cart.getBillingAddress().getStreet() + "', '" + 
     		   "" + "', '" + cart.getBillingAddress().getCity() + "', '" + cart.getBillingAddress().getState() + "', '" +
@@ -306,7 +306,7 @@ public class DbClassShoppingCart implements DbClass, DbClassShoppingCartForTest 
     			String type = rs.getString("cardtype");
     			String exp  = rs.getString("expdate");
     			creditCard = 
-    				CustomerSubsystemFacade.createCreditCard(name, num, type, exp);
+    				CustomerSubsystemFacade.createCreditCard(name, exp, num, type);
     			
     			//load cart
     			cartImpl.setCartId((new Integer(rs.getInt("shopcartid")).toString()));

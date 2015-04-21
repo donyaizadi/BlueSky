@@ -7,6 +7,9 @@ import java.util.logging.Logger;
 
 import middleware.exceptions.DatabaseException;
 import middleware.externalinterfaces.DbClass;
+import business.BusinessConstants;
+import business.SessionCache;
+import business.customersubsystem.CustomerSubsystemFacade;
 import business.customersubsystem.RulesPayment;
 import business.exceptions.BackendException;
 import business.exceptions.BusinessException;
@@ -15,6 +18,7 @@ import business.externalinterfaces.Address;
 import business.externalinterfaces.CartItem;
 import business.externalinterfaces.CreditCard;
 import business.externalinterfaces.CustomerProfile;
+import business.externalinterfaces.CustomerSubsystem;
 import business.externalinterfaces.DbClassShoppingCartForTest;
 import business.externalinterfaces.Rules;
 import business.externalinterfaces.ShoppingCart;
@@ -27,7 +31,7 @@ public enum ShoppingCartSubsystemFacade implements ShoppingCartSubsystem {
 	ShoppingCartImpl savedCart;
 	Integer shopCartId;
 	CustomerProfile customerProfile;
-	Logger log = Logger.getLogger(this.getClass().getPackage().getName());
+	Logger LOG = Logger.getLogger(this.getClass().getPackage().getName());
 	DbClassShoppingCart dbClass = new DbClassShoppingCart();
 	// interface methods
 	public void setCustomerProfile(CustomerProfile customerProfile) {
@@ -123,6 +127,12 @@ public enum ShoppingCartSubsystemFacade implements ShoppingCartSubsystem {
 	@Override
 	public void saveLiveCart() throws BackendException {
 		// TODO Auto-generated method stub
+		CustomerSubsystem cs = (CustomerSubsystem) SessionCache.getInstance()
+				.get(BusinessConstants.CUSTOMER);
+		liveCart.setPaymentInfo(cs.getDefaultPaymentInfo());
+		liveCart.setShipAddress(cs.getDefaultShippingAddress());
+		liveCart.setBillAddress(cs.getDefaultBillingAddress());
+		customerProfile = cs.getCustomerProfile();
 		try {
 			dbClass.saveCart(customerProfile, liveCart);
 		} catch (DatabaseException e) {
