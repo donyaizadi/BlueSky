@@ -28,11 +28,10 @@ import presentation.control.ViewOrdersUIControl;
 
 
 public class Start extends Application {
-	public static ApplicationContext ctx;
+	public static ApplicationContext ctx=new ClassPathXmlApplicationContext(
+			"resources/application.xml");
 	
 	public static void main(String[] args) {
-		ctx = new ClassPathXmlApplicationContext(
-				"resources/application.xml");	
 		launch(args);
 	}
 

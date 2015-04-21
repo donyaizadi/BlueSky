@@ -13,6 +13,7 @@ import business.externalinterfaces.ShoppingCart;
 import business.externalinterfaces.ShoppingCartSubsystem;
 import business.shoppingcartsubsystem.ShoppingCartSubsystemFacade;
 import junit.framework.TestCase;
+import launch.Start;
 
 public class ShoppingCartSubsystemTest extends TestCase {
 	
@@ -25,19 +26,18 @@ public class ShoppingCartSubsystemTest extends TestCase {
 	
 	public void testRetrieveSavedCart(){
 		int idExpected = DbQueries.readIdShoppingCart();
-//		ShoppingCartSubsystem scs = ShoppingCartSubsystemFacade.INSTANCE;
-//		CustomerSubsystem css = new CustomerSubsystemFacade();
-//		scs.setCustomerProfile(css.getCustomerProfile());
-//
-//		try {
-//			scs.retrieveSavedCart();
-//			scs.makeSavedCartLive();
-//		} catch (BackendException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		ShoppingCart liveCart = scs.getLiveCart();
-//		int idReturned = Integer.parseInt(liveCart.getId());
-//		assertTrue(idExpected == idReturned);
+		ShoppingCartSubsystem scs = (ShoppingCartSubsystem) Start.ctx.getBean("scss");
+		CustomerSubsystem css = (CustomerSubsystem) Start.ctx.getBean("css");
+		scs.setCustomerProfile(css.getGenericCustomerProfile());
+		try {
+			scs.retrieveSavedCart();
+			scs.makeSavedCartLive();
+		} catch (BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ShoppingCart liveCart = scs.getLiveCart();
+		int idReturned = Integer.parseInt(liveCart.getId());
+		assertTrue(idExpected == idReturned);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import test.DbQueries;
 import test.alltests.AllTests;
+import launch.Start;
 import middleware.exceptions.DatabaseException;
 import business.customersubsystem.CustomerSubsystemFacade;
 import business.exceptions.BackendException;
@@ -28,7 +29,7 @@ public class DBClassShoppingCartTest extends TestCase {
 	public void testRetrieveSavedCart(){	
 		int expectedId = DbQueries.readIdShoppingCart();
 		CustomerSubsystem css = new CustomerSubsystemFacade();
-		IDbClassShoppingCart dbClass = AllTests.ctx.getBean(IDbClassShoppingCart.class);
+		IDbClassShoppingCart dbClass = Start.ctx.getBean(IDbClassShoppingCart.class);
 		CustomerProfile customPro = css.getGenericCustomerProfile();
 		try {
 			ShoppingCart retrievedShoppingCart = dbClass.retrieveSavedCart(customPro);
