@@ -51,27 +51,31 @@ public enum BrowseAndSelectController {
 	public void runQuantityRules(Product product, String quantityRequested)
 			throws RuleException, BusinessException {
 
-		ProductSubsystem prodSS = new ProductSubsystemFacade();
+//		ProductSubsystem prodSS = new ProductSubsystemFacade();
 		
 		//find current quant avail since quantity may have changed
 		//since product was first loaded into UI
-		int currentQuantityAvail = prodSS.readQuantityAvailable(product);
+		ProductSubsystem pss = (ProductSubsystemFacade)Start.ctx.getBean("pss");
+		int currentQuantityAvail = pss.readQuantityAvailable(product);
 		Rules transferObject = new RulesQuantity(currentQuantityAvail, quantityRequested);//
 		transferObject.runRules();
 
 	}
 	
 	public List<Catalog> getCatalogs() throws BackendException {
-		ProductSubsystem pss = new ProductSubsystemFacade();
+//		ProductSubsystem pss = new ProductSubsystemFacade();
+		ProductSubsystem pss = (ProductSubsystemFacade)Start.ctx.getBean("pss");
 		return pss.getCatalogList();
 	}
 	
 	public List<Product> getProducts(Catalog catalog) throws BackendException {
-		ProductSubsystem pss = new ProductSubsystemFacade();
+//		ProductSubsystem pss = new ProductSubsystemFacade();
+		ProductSubsystem pss = (ProductSubsystemFacade)Start.ctx.getBean("pss");
 		return pss.getProductList(catalog);
 	}
 	public Product getProductForProductName(String name) throws BackendException {
-		ProductSubsystem pss = new ProductSubsystemFacade();
+//		ProductSubsystem pss = new ProductSubsystemFacade();
+		ProductSubsystem pss = (ProductSubsystemFacade)Start.ctx.getBean("pss");
 		return pss.getProductFromName(name);
 	}
 	

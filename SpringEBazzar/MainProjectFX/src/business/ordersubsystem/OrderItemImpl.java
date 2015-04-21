@@ -11,6 +11,8 @@ public class OrderItemImpl implements OrderItem {
 	private int quantity;
 	private double unitPrice;
 	
+	public OrderItemImpl() {}
+	
 	public OrderItemImpl(String name, int quantity, double price) {
 		productName = name;
 		this.quantity = quantity;

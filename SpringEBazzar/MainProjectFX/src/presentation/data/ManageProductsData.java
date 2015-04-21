@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import launch.Start;
 import middleware.exceptions.DatabaseException;
 import presentation.gui.GuiUtils;
 import javafx.collections.FXCollections;
@@ -18,7 +19,8 @@ import business.productsubsystem.ProductSubsystemFacade;
 
 public enum ManageProductsData {
 	INSTANCE;
-	ProductSubsystem productSubsystem = new ProductSubsystemFacade();
+//	ProductSubsystem productSubsystem = new ProductSubsystemFacade();
+	ProductSubsystem productSubsystem = (ProductSubsystemFacade)Start.ctx.getBean("pss");
 	
 	private CatalogPres defaultCatalog = readDefaultCatalogFromDataSource();
 	private CatalogPres readDefaultCatalogFromDataSource() {
@@ -79,10 +81,11 @@ public enum ManageProductsData {
 	}
 	
 	public void addToProdList(CatalogPres catPres, ProductPres prodPres) {
-		ProductSubsystemFacade productSubsystemFacade = new ProductSubsystemFacade();
+//		ProductSubsystemFacade productSubsystemFacade = new ProductSubsystemFacade();
+		ProductSubsystem pss = (ProductSubsystemFacade)Start.ctx.getBean("pss");
 		prodPres.getProduct().setCatalog(catPres.getCatalog());
 		try {
-			Integer productId = productSubsystemFacade.saveNewProduct(prodPres.getProduct());
+			Integer productId = pss.saveNewProduct(prodPres.getProduct());
 			prodPres.getProduct().setProductId(productId);
 		} catch (BackendException e) {
 			e.printStackTrace();
@@ -102,9 +105,10 @@ public enum ManageProductsData {
 	 */
 	public boolean removeFromProductList(CatalogPres cat, ObservableList<ProductPres> toBeRemoved) {
 		if(toBeRemoved != null && !toBeRemoved.isEmpty()) {
-			ProductSubsystemFacade productSubsystemFacade = new ProductSubsystemFacade();
+//			ProductSubsystemFacade productSubsystemFacade = new ProductSubsystemFacade();
+			ProductSubsystem pss = (ProductSubsystemFacade)Start.ctx.getBean("pss");
 			try {
-				productSubsystemFacade.deleteProduct(toBeRemoved.get(0).getProduct());
+				pss.deleteProduct(toBeRemoved.get(0).getProduct());
 			} catch (BackendException e) {
 				e.printStackTrace();
 			}
@@ -152,8 +156,9 @@ public enum ManageProductsData {
 		// catalogList is guaranteed to be non-null
 		boolean result = catalogList.addAll(newCatalogs);
 		if(result) { //must make this catalog accessible in productsMap
-			ProductSubsystemFacade productSubsystemFacade = new ProductSubsystemFacade();
-			Integer catalogId = productSubsystemFacade.saveNewCatalog(catPres.getCatalog());
+//			ProductSubsystemFacade productSubsystemFacade = new ProductSubsystemFacade();
+			ProductSubsystem pss = (ProductSubsystemFacade)Start.ctx.getBean("pss");
+			Integer catalogId = pss.saveNewCatalog(catPres.getCatalog());
 			catPres.getCatalog().setId(catalogId);
 			
 			productsMap.put(catPres, FXCollections.observableList(new ArrayList<ProductPres>()));
@@ -176,8 +181,9 @@ public enum ManageProductsData {
 		CatalogPres item = toBeRemoved.get(0);
 		if (toBeRemoved != null && !toBeRemoved.isEmpty()) {
 			result = catalogList.remove(item);
-			ProductSubsystemFacade productSubsystemFacade = new ProductSubsystemFacade();
-			productSubsystemFacade.deleteCatalog(item.getCatalog());
+//			ProductSubsystemFacade productSubsystemFacade = new ProductSubsystemFacade();
+			ProductSubsystem pss = (ProductSubsystemFacade)Start.ctx.getBean("pss");
+			pss.deleteCatalog(item.getCatalog());
 		}
 		if(item.equals(selectedCatalog)) {
 			if(!catalogList.isEmpty()) {

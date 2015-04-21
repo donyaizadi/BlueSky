@@ -5,21 +5,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
 import middleware.exceptions.DatabaseException;
 import business.exceptions.BackendException;
-import business.externalinterfaces.CartItem;
 import business.externalinterfaces.CustomerProfile;
 import business.externalinterfaces.Order;
 import business.externalinterfaces.OrderItem;
 import business.externalinterfaces.OrderSubsystem;
 import business.externalinterfaces.ShoppingCart;
 
+@Service("orderss")
 public class OrderSubsystemFacade implements OrderSubsystem {
-	private static final Logger LOG = 
-			Logger.getLogger(OrderSubsystemFacade.class.getPackage().getName());
+	private static final Logger LOG = Logger.getLogger(OrderSubsystemFacade.class.getPackage().getName());
 	CustomerProfile custProfile;
 	    
-    public OrderSubsystemFacade(CustomerProfile custProfile){
+	@Inject
+	private IDbclassOrder dbClass; 
+	
+	public OrderSubsystemFacade(){
+    }   
+	
+	public OrderSubsystemFacade(CustomerProfile custProfile){
+        this.custProfile = custProfile;
+    }
+
+	public void setCustomerProfile(CustomerProfile custProfile){
         this.custProfile = custProfile;
     }
 	
@@ -38,16 +51,16 @@ public class OrderSubsystemFacade implements OrderSubsystem {
     
     ///////////// Methods internal to the Order Subsystem -- NOT public
     List<Integer> getAllOrderIds() throws DatabaseException {
-        DbClassOrder dbClass = new DbClassOrder();
+//        DbClassOrder dbClass = new DbClassOrder();
         return dbClass.getAllOrderIds(custProfile);
     }
     List<OrderItem> getOrderItems(Integer orderId) throws DatabaseException {
-        DbClassOrder dbClass = new DbClassOrder();
+//        DbClassOrder dbClass = new DbClassOrder();
         return dbClass.getOrderItems(orderId);
     }
     
     OrderImpl getOrderData(Integer orderId) throws DatabaseException {
-    	DbClassOrder dbClass = new DbClassOrder();
+//    	DbClassOrder dbClass = new DbClassOrder();
     	return dbClass.getOrderData(orderId);
     }
     
@@ -64,7 +77,7 @@ public class OrderSubsystemFacade implements OrderSubsystem {
 	public List<Order> getOrderHistory() throws BackendException {
 		// TODO Auto-generated method stub
 		try {
-			DbClassOrder dbClass = new DbClassOrder();
+//			DbClassOrder dbClass = new DbClassOrder();
 			List<Order> orders = new ArrayList<Order>();
 	        List<Integer> orderIds = dbClass.getAllOrderIds(custProfile);
 	        for (int orderId : orderIds) {
@@ -84,9 +97,10 @@ public class OrderSubsystemFacade implements OrderSubsystem {
 	public void submitOrder(ShoppingCart shopCart) throws BackendException {
 		// TODO Auto-generated method stub
 		OrderImpl orderData = createOrderData(shopCart);
-		DbClassOrder db = new DbClassOrder(orderData, custProfile);
+//		DbClassOrder db = new DbClassOrder(orderData, custProfile);
+//		dbClass.setOrderandCustProfile(orderData, custProfile);
 		try {
-			db.submitOrder(shopCart);
+			dbClass.submitOrder(shopCart, orderData, custProfile);
 		} catch (DatabaseException e) {
 			throw new BackendException(e);
 		}

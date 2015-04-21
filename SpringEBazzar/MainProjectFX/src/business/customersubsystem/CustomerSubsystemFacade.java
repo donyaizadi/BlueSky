@@ -12,7 +12,6 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
-
 import launch.Start;
 import middleware.creditverifcation.CreditVerificationFacade;
 import middleware.exceptions.DatabaseException;
@@ -111,7 +110,9 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 	}
 	
 	void loadOrderData() throws BackendException {
-		orderSubsystem = new OrderSubsystemFacade(customerProfile);
+		//orderSubsystem = new OrderSubsystemFacade(customerProfile);
+		OrderSubsystemFacade orderSubsystem = (OrderSubsystemFacade)Start.ctx.getBean("orderss");
+		orderSubsystem.setCustomerProfile(customerProfile);
 		orderHistory = orderSubsystem.getOrderHistory();
 		LOGGER.info("total count of order history =  " + orderHistory.size());
 	}
@@ -219,7 +220,10 @@ public class CustomerSubsystemFacade implements CustomerSubsystem {
 
 	@Override
 	public void submitOrder() throws BackendException {
-		orderSubsystem.submitOrder(shoppingCartSubsystem.getLiveCart());
+		OrderSubsystemFacade orderSubsystem = (OrderSubsystemFacade)Start.ctx.getBean("orderss");
+		orderSubsystem.submitOrder(shoppingCartSubsystem.getLiveCart());						
+		
+//		orderSubsystem.submitOrder(shoppingCartSubsystem.getLiveCart());
 		
 	}
 

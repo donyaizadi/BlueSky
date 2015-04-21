@@ -20,9 +20,13 @@ public class ProductImpl implements Product {
     public int getQuantityRequested() {
 		return quantityRequested;
 	}
-	public void setQuantityRequested(int quantityRequested) {
+	
+    public void setQuantityRequested(int quantityRequested) {
 		this.quantityRequested=quantityRequested;
 	}
+	
+	public ProductImpl(){}
+	
 	public ProductImpl(Catalog c, Integer pi, String pn, int qa, 
 			double up, LocalDate md, String d){
         if(pi != null) productId = pi;

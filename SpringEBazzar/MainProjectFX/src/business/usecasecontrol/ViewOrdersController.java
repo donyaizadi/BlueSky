@@ -2,7 +2,7 @@
 package business.usecasecontrol;
 
 import java.util.List;
-
+import launch.Start;
 import business.BusinessConstants;
 import business.SessionCache;
 import business.exceptions.BackendException;
@@ -28,8 +28,12 @@ public enum ViewOrdersController   {
 			try {
 				SessionCache cache = SessionCache.getInstance();
 				CustomerSubsystem customerSub = (CustomerSubsystem) cache.get(BusinessConstants.CUSTOMER);
-				OrderSubsystem orderSub = new OrderSubsystemFacade(customerSub.getCustomerProfile());
-				List<Order> orders = orderSub.getOrderHistory();		
+//				OrderSubsystem orderSub = new OrderSubsystemFacade(customerSub.getCustomerProfile());
+				
+				OrderSubsystemFacade orderSubsystem = (OrderSubsystemFacade)Start.ctx.getBean("orderss");
+				orderSubsystem.setCustomerProfile(customerSub.getCustomerProfile());
+				List<Order> orders = orderSubsystem.getOrderHistory();						
+				
 				return orders;
 			} catch (BackendException e) {
 				e.printStackTrace();

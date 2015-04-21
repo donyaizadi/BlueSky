@@ -3,6 +3,7 @@ package business.shoppingcartsubsystem;
 
 import java.util.logging.Logger;
 
+import launch.Start;
 import business.exceptions.BackendException;
 import business.externalinterfaces.CartItem;
 import business.externalinterfaces.ProductSubsystem;
@@ -30,8 +31,9 @@ public class CartItemImpl implements CartItem {
         this.quantity = quantity;
         this.totalprice = totalprice;
         alreadySaved = false;
-        ProductSubsystem prodSS= new ProductSubsystemFacade();
-        productid = prodSS.getProductFromName(productName).getProductId();
+//        ProductSubsystem prodSS= new ProductSubsystemFacade();
+        ProductSubsystem pss = (ProductSubsystemFacade)Start.ctx.getBean("pss");
+        productid = pss.getProductFromName(productName).getProductId();
     }
     
     /** This version of constructor used when reading from database */
@@ -47,8 +49,9 @@ public class CartItemImpl implements CartItem {
         this.quantity = quantity;
         this.totalprice =totalprice;
         this.alreadySaved = alreadySaved;
-        ProductSubsystem prodSS= new ProductSubsystemFacade();
-        productName = prodSS.getProductFromId(productid).getProductName();
+//        ProductSubsystem prodSS= new ProductSubsystemFacade();
+        ProductSubsystem pss = (ProductSubsystemFacade)Start.ctx.getBean("pss");
+        productName = pss.getProductFromId(productid).getProductName();
     }
     
     //default constructor for testing only

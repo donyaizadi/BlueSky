@@ -53,13 +53,6 @@ public class AddressImpl implements Address{
     public void setState(String state) {
         this.state = state;
     }
- 
-  
- 
- 
- 
-
- 
 
     public String getZip() {
         return zip;
@@ -79,10 +72,14 @@ public class AddressImpl implements Address{
         return sb.toString();
     }
 
+<<<<<<< Updated upstream
 	
 
 	
 	
+=======
+    @Override
+>>>>>>> Stashed changes
 	public String getStreet() {
 		return street;
 	}
