@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +14,12 @@ import middleware.externalinterfaces.DbConfigKey;
 import test.alltests.AllTests;
 import business.customersubsystem.CustomerSubsystemFacade;
 import business.externalinterfaces.Address;
+import business.externalinterfaces.CustomerProfile;
+import business.externalinterfaces.Order;
+import business.externalinterfaces.OrderItem;
+import business.ordersubsystem.OrderImpl;
+import business.ordersubsystem.OrderItemImpl;
+import business.util.Util;
 
 public class DbQueries {
 	static {
@@ -231,9 +238,6 @@ public class DbQueries {
                  id = rs.getInt("shopcartid");   
                 }  
                 stmt.close();
-                
-                    
-	            
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
@@ -242,7 +246,69 @@ public class DbQueries {
 		return id;
 	}
 	
+	public static List<Integer> readAllOrderIds(CustomerProfile customPro){
+		List<Integer> orderIds = new ArrayList<Integer>();
+		String query = readOrderIdsSql(customPro.getCustId());
+		try {
+			stmt = acctCon.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+            while(rs.next()){
+            	orderIds.add(rs.getInt("orderid"));
+            }
+           stmt.close();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return orderIds;
+	}
 	
+	public static List<Order> readAllOrders(CustomerProfile customPro){
+		List<Order> orders = new ArrayList<Order>();
+		List<Integer> orderIds = readAllOrderIds(customPro);
+		for (int orderId : orderIds) {
+			List<OrderItem> orderItems = getOrderItems(orderId);
+			Order order = getOrderData(orderId);
+			order.setOrderItems(orderItems);
+			order.setOrderId(orderId);
+			orders.add(order);
+		}
+		return orders;
+	}
+	
+	public static List<OrderItem> getOrderItems(Integer orderId){	
+		List<OrderItem> orderItems = new LinkedList<OrderItem>();
+		String query = readOrderItems(orderId);
+    	try {
+    		stmt = acctCon.createStatement();
+    		ResultSet rs = stmt.executeQuery(query);
+			while(rs.next()){
+				//Escape getting product info from productSubsystem
+				OrderItem item= new OrderItemImpl("pTestName", rs.getInt("quantity"), 10.0);
+					orderItems.add(item);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	return orderItems;
+	}
+		
+	
+	public static Order getOrderData(Integer orderId){
+		Order orderData = new OrderImpl();
+		String query = readOrderData(orderId);
+		try {
+			stmt = acctCon.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			if(rs.next()){
+				orderData.setDate(Util.localDateForString(rs.getString("orderdate")));
+		}
+		stmt.close();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return orderData;
+	}
 	
 	/**
 	 * Returns a String[] with values:
@@ -314,6 +380,24 @@ public class DbQueries {
 			e.printStackTrace();
 		}
 	}
+	public static String getCatalogByIdSql(Integer catalogId) {
+		String name = "";
+		try {
+			stmt = prodCon.createStatement();
+			ResultSet rs = stmt.executeQuery(readCatalogByIdSql(catalogId));
+			if(rs.next())
+			{
+				name = rs.getString("catalogname");
+			}
+			stmt.close();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return name;
+	}
+	
+	
 	public static void deleteCustomerRow(Integer custId) {
 		try {
 			stmt = acctCon.createStatement();
@@ -344,10 +428,23 @@ public class DbQueries {
 		return "INSERT INTO Customer VALUES (null,null,null,null,null,null,null,'81000 N. 4th St.',null,null,null,null,null,null,null,null,null,null,null,null,null)";
 	}
 	
-	
+
 	public static String readSavedShoppingCartSql(){
 		return "SELECT * from shopcarttbl WHERE custid= 1";
 	}
+	
+	public static String readOrderIdsSql(Integer customerId){
+		return "SELECT orderid FROM Ord WHERE custid = "+customerId;
+	}
+
+    private static String readOrderData(Integer orderId) {
+        return "SELECT orderdate, totalpriceamount FROM Ord WHERE orderid = " + String.valueOf(orderId);     
+    }
+  
+    private static String readOrderItems(Integer orderId) {
+        return "SELECT * FROM OrderItem WHERE orderid = " + String.valueOf(orderId); 
+    }
+
 	public static String[] saveCatalogSql() {
 		String[] vals = new String[3];
 		
@@ -389,6 +486,11 @@ public class DbQueries {
 	public static String deleteProductSql(Integer prodId) {
 		return "DELETE FROM Product WHERE productid = "+prodId;
 	}
+	
+	public static String readCatalogByIdSql(Integer catalogId) {
+		return "SELECT * FROM CatalogType WHERE catalogid = "+ String.valueOf(catalogId);
+	}
+
 	public static String deleteCatalogSql(Integer catId) {
 		return "DELETE FROM CatalogType WHERE catalogid = "+catId;
 	}

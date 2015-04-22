@@ -8,6 +8,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import test.daotests.DBClassShoppingCartTest;
 import test.daotests.DbClassAddressTest;
+import test.daotests.DbClassCatalogTest;
+import test.daotests.DbClassOrderTest;
+import test.subsystemtests.OrderSubsystemTest;
+import test.subsystemtests.ProductSubsystemTest;
 import test.subsystemtests.ShoppingCartSubsystemTest;
 import business.externalinterfaces.RulesConfigProperties;
 import middleware.DbConfigProperties;
@@ -60,6 +64,10 @@ public class AllTests extends TestSuite {
 		//$JUnit-BEGIN$ -- put fully qualified classnames of all tests here
 		suite.addTest(new DBClassShoppingCartTest());
 		suite.addTest(new ShoppingCartSubsystemTest());
+		suite.addTest(new ProductSubsystemTest());
+		suite.addTest(new DbClassCatalogTest());
+		suite.addTest(new OrderSubsystemTest());
+		suite.addTest(new DbClassOrderTest());
 		//$JUnit-END$
 		return suite;
 	}

@@ -1,18 +1,17 @@
 package test.subsystemtests;
 
-
-import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
-import test.DbQueries;
-import test.alltests.AllTests;
+import business.exceptions.BackendException;
+import business.externalinterfaces.Catalog;
 import business.externalinterfaces.ProductSubsystem;
 import business.productsubsystem.ProductSubsystemFacade;
+import test.DbQueries;
+import test.alltests.AllTests;
 import junit.framework.TestCase;
+import launch.Start;
 
-public class ProductSubsystemTest extends TestCase {
-	
+
+public class ProductSubsystemTest extends TestCase{
 	static String name = "Product Subsystem Test";
 	static Logger log = Logger.getLogger(ProductSubsystemTest.class.getName());
 	
@@ -20,37 +19,19 @@ public class ProductSubsystemTest extends TestCase {
 		AllTests.initializeProperties();
 	}
 	
-	public void testGetCatalogNames() {
-		//setup
-		/*
-		 * Returns a String[] with values:
-		 * 0 - query
-		 * 1 - catalog id
-		 * 2 - catalog name
-		 */
-		String[] insertResult = DbQueries.insertCatalogRow();
-		String expected = insertResult[2];
-		
-		ProductSubsystem pss = new ProductSubsystemFacade();
-		try {/*
-			List<String> found = pss.getCatalogList()
-				      .stream()
-				      .map(cat -> cat.getName())
-				      .collect(Collectors.toList());
-			boolean valfound = false;
-			for(String catData : found) {
-				
-					if(catData.equals(expected)) valfound = true;
-				
-			}
-			assertTrue(valfound);*/
-			
-		} catch(Exception e) {
-			fail("Inserted value not found");
-		} finally {
-			DbQueries.deleteCatalogRow(Integer.parseInt(insertResult[1]));
-		}
-	
+	public void testsaveNewCatalog(){
+
+		ProductSubsystem pss = (ProductSubsystem) Start.ctx.getBean("pss");
+		String expectedName = "CatalogTest";
+		Catalog catalog = ProductSubsystemFacade.createCatalog(1, expectedName); 
+			Integer generatedId;
+			try {
+				generatedId = pss.saveNewCatalog(catalog);
+				String retrievedName = DbQueries.getCatalogByIdSql(generatedId);
+				assertTrue(retrievedName.equals(expectedName));
+			} catch (BackendException e) {
+				fail("Saved catalog naem doesn't match with retrieved one");
+		    }			
 	}
-	
+
 }

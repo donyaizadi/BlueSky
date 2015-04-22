@@ -11,7 +11,6 @@ import business.externalinterfaces.ShoppingCart;
 
 public interface IDbclassOrder {
 	public void setDataSource(DataSource dataSource);
-	public void setOrderandCustProfile(OrderImpl order, CustomerProfile custProfile);
 	public List<Integer> getAllOrderIds(CustomerProfile custProfile) throws DatabaseException;
 	public void submitOrder(ShoppingCart shopCart, OrderImpl order, CustomerProfile custProfile) throws DatabaseException;
 	public OrderImpl getOrderData(Integer orderId) throws DatabaseException;

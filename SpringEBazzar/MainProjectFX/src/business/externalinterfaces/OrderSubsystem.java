@@ -19,6 +19,7 @@ public interface OrderSubsystem {
 //	 */ 
     void submitOrder(ShoppingCart shopCart) throws BackendException;
 	
-	
+    // For test cases
+    public void setCustomerProfile(CustomerProfile custProfile);
 
 }

@@ -92,10 +92,10 @@ class DbClassOrder implements IDbclassOrder{
 //        this.custProfile = custProfile;
 //    } 
     
-    public void setOrderandCustProfile(OrderImpl order, CustomerProfile custProfile){
-        this.order = order;
-        this.custProfile = custProfile;    	
-    }
+//    public void setOrderandCustProfile(OrderImpl order, CustomerProfile custProfile){
+//        this.order = order;
+//        this.custProfile = custProfile;    	
+//    }
     
     @Inject
     @Named("dataSourceAccounts")

@@ -60,7 +60,7 @@ public class OrderSubsystemFacade implements OrderSubsystem {
 		return null;
 	}
 
-	// /////////// Methods internal to the Order Subsystem -- NOT public
+	 /////////// Methods internal to the Order Subsystem -- NOT public
 	List<Integer> getAllOrderIds() throws DatabaseException {
 		// DbClassOrder dbClass = new DbClassOrder();
 		return dbClass.getAllOrderIds(custProfile);
